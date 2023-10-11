@@ -16,17 +16,17 @@ export const followerRouter = Router()
 const service: FollowerService = new FollowerServiceImpl(new FollowerRepositoryImpl(db))
 
 followerRouter.post('/follow/:userId', async (req: Request, res: Response) => {
-    const { userId } = res.locals.context
-  
+    const userId: string  = req.params.userId
+
     const post = await service.follow(userId, req)
   
-    return res.status(HttpStatus.CREATED).json(post)
+    return res.status(HttpStatus.OK).json(post)
 })
 
 followerRouter.post('/unfollow/:userId', async (req: Request, res: Response) => {
-    const { userId } = res.locals.context
+    const userId: string = req.params.userId
   
     const post = await service.unfollow(userId, req)
   
-    return res.status(HttpStatus.CREATED).json(post)
+    return res.status(HttpStatus.OK).json(post)
 })

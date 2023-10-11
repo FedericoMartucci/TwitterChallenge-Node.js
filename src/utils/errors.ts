@@ -32,7 +32,7 @@ export class ForbiddenException extends HttpException {
 
 export class NotFoundException extends HttpException {
   constructor (model?: string) {
-    super(HttpStatus.NOT_FOUND, `Not found.${model ? " Couldn't find " + model : ''}`)
+    super(HttpStatus.NOT_FOUND, `Not found.${model ? " Couldn't find any " + model : ''}`)
   }
 }
 

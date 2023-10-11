@@ -1,5 +1,9 @@
+import { UserDTO } from "@domains/user/dto";
+import { FollowDTO } from "../dto";
+
 export interface FollowerRepository{
-    followById: (userId: any) => Promise<void>;
-    unfollowById: (userId: any) => Promise<void>;
-    getById: (userId: any) => Promise<void>;
+    followByUsers: (follower:UserDTO, followed:UserDTO) => Promise<FollowDTO>;
+    unfollowById: (followId: string|undefined) => Promise<void>;
+    getFollowId: (follower:UserDTO, followed:UserDTO) => Promise<string|undefined>;
+    isFollowing: (userId: string, ownId: string) => Promise<boolean>;
 }

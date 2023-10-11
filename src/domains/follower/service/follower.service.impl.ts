@@ -1,27 +1,45 @@
-import { ForbiddenException, NotFoundException, getUserIdFromToken } from "@utils"
+import { ForbiddenException, NotFoundException, db, getUserIdFromToken } from "@utils"
 import { FollowerService } from "./follower.service"
 import { Request } from "express"
 import { FollowerRepository } from "../repository"
+import { FollowDTO } from "../dto"
+import { UserDTO } from "@domains/user/dto"
+import { UserRepositoryImpl } from "@domains/user/repository"
+import { log } from "console"
 
 export class FollowerServiceImpl implements FollowerService {
     constructor (private readonly repository: FollowerRepository) {}
   
-    async follow (userId: any, req: Request): Promise<void> {
-        const followId = await this.repository.getById(userId)
+    async follow (userId: any, req: Request): Promise<FollowDTO> {
+        const followId:boolean = await new UserRepositoryImpl(db).isExistingId(userId)
         const ownId = getUserIdFromToken(req)
-        if(ownId === userId) throw new ForbiddenException()
+        const isAlreadyFollowing: boolean = await this.repository.isFollowing(userId, ownId as string)
 
-        return await this.repository.followById(userId)
+        if(!followId) throw new NotFoundException('user')
+        if(ownId === userId) throw new ForbiddenException()
+        if(isAlreadyFollowing) throw new ForbiddenException()
+
+        const followerUser:UserDTO|null = await new UserRepositoryImpl(db).getById(ownId) 
+        const followedUser:UserDTO|null = await new UserRepositoryImpl(db).getById(userId)
+
+        return await this.repository.followByUsers(followerUser as UserDTO, followedUser as UserDTO)
     }
   
     async unfollow (userId: any, req: Request): Promise<void> {
-        const followedId = await this.repository.getById(userId)
+        const followedId:boolean = await new UserRepositoryImpl(db).isExistingId(userId)
         const ownId = getUserIdFromToken(req)
         
         if (!followedId) throw new NotFoundException('user')
         if(ownId === userId) throw new ForbiddenException()
+
+        const followerUser:UserDTO|null = await new UserRepositoryImpl(db).getById(ownId) 
+        const followedUser:UserDTO|null = await new UserRepositoryImpl(db).getById(userId)
         
-        await this.repository.unfollowById(userId)
+        const followId:string|undefined = await this.repository.getFollowId(followerUser as UserDTO, followedUser as UserDTO)
+
+        if(followId === undefined) throw new ForbiddenException()
+
+        await this.repository.unfollowById(followId)
     }
   }
   

@@ -5,6 +5,7 @@ CREATE TABLE "User" (
     "name" VARCHAR(35),
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "isPrivate" BOOLEAN,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),

@@ -18,8 +18,29 @@ export class PostRepositoryImpl implements PostRepository {
     return new PostDTO(post)
   }
 
-  async getAllByDatePaginated (options: CursorPagination): Promise<PostDTO[]> {
+  async getAllByDatePaginated (userId: string, options: CursorPagination): Promise<PostDTO[]> {
     const posts = await this.db.post.findMany({
+      where: {
+        OR: [
+          {
+            author: {
+              isPrivate: false,
+            },
+          },
+          {
+            author: {
+              followers: {
+                some: {
+                  followerId: userId,
+                },
+              },
+            },
+          },
+        ],
+        authorId: {
+          not: userId,
+        },
+      },
       cursor: options.after ? { id: options.after } : (options.before) ? { id: options.before } : undefined,
       skip: options.after ?? options.before ? 1 : undefined,
       take: options.limit ? (options.before ? -options.limit : options.limit) : undefined,
@@ -43,20 +64,53 @@ export class PostRepositoryImpl implements PostRepository {
     })
   }
 
-  async getById (postId: string): Promise<PostDTO | null> {
+  async getById (userId: string, postId: string): Promise<PostDTO | null> {
     const post = await this.db.post.findUnique({
       where: {
+        OR:[
+          {
+            authorId : userId,
+          },
+          {
+            author: {
+              followers: {
+                some: {
+                  followerId: userId,
+                },
+              },
+            },
+          },
+          {
+            author: {
+              isPrivate: false,
+            },
+          },
+        ],
         id: postId
       }
     })
     return (post != null) ? new PostDTO(post) : null
   }
 
-  async getByAuthorId (authorId: string): Promise<PostDTO[]> {
+  async getByAuthorId (userId: string, authorId: string): Promise<PostDTO[]> {
     const posts = await this.db.post.findMany({
       where: {
-        authorId
-      }
+        authorId: authorId,
+        OR: [
+          {
+            author: {
+              followers: {
+                some: {
+                  followerId: userId,
+                },
+              },
+            },
+          },
+          {
+            authorId: userId,
+          },
+        ],
+      },
     })
     return posts.map(post => new PostDTO(post))
   }

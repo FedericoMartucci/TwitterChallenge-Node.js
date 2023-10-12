@@ -20,7 +20,6 @@ export class SignupInputDTO {
     password: string
 
   @IsBoolean()
-  @IsNotEmpty()
     isPrivate: boolean
 
   constructor (email: string, username: string, password: string, isPrivate: boolean = false) {

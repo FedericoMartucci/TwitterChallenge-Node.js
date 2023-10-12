@@ -1,3 +1,119 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     TokenDTO:
+ *       type: object
+ *       required:
+ *         - token
+ *       properties:
+ *         token:
+ *           type: string
+ *           description: Json Web Token with 24hr expiration
+ *       example:
+ *         token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMjM5MzFhYS05YWEwLTRhNWYtYTMyMS05NGY5NjY5YzVkM2IiLCJpYXQiOjE2OTcxMjM4OTksImV4cCI6MTY5NzIxMDI5OX0.EXbjRcjaV7qifFbtImuCk7NZRDRcmRY-W11ynWWBWyY
+ *     SignupInputDTO:
+ *       type: object
+ *       required:
+ *         - email
+ *         - username
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: The user's email address.
+ *         username:
+ *           type: string
+ *           description: The user's username.
+ *         password:
+ *           type: string
+ *           description: The user's password.
+ *         isPrivate:
+ *           type: boolean
+ *           description: Privacy of the user account
+ *       example:
+ *         email: example@user.com
+ *         username: username
+ *         password: Password123.
+ *         isPrivate: true
+ *     LoginInputDTO:
+ *       type: object
+ *       required:
+ *         - email
+ *         - username
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: The email address of the user
+ *         username:
+ *           type: string
+ *           description: The username of the user
+ *         password:
+ *           type: string
+ *           description: The password of the user
+ *       example:
+ *         email: example@user.com
+ *         username: username
+ *         password: Password123.
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: The auth managing API
+ * /api/auth/signup:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SignupInputDTO'
+ *     responses:
+ *       201:
+ *         description: Creates a user and returns a token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TokenDTO'
+ *       209:
+ *         description: The user already exists.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SignupInputDTO'
+ *       400:
+ *         description: Invalid request body.
+ *       500:
+ *         description: Some server error.
+ * /api/auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginInputDTO'
+ *     responses:
+ *       200:
+ *         description: Login the user and return the session token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TokenDTO'
+ *       400:
+ *         description: Invalid request body.
+ *       404:
+ *         description: Could not find any user.
+ *       500:
+ *         description: Some server error.
+ *
+ */
 import { Request, Response, Router } from 'express'
 import HttpStatus from 'http-status'
 // express-async-errors is a module that handles async errors in express, don't forget import it in your new controllers

@@ -9,10 +9,13 @@
  *   responses:
  *     ForbiddenException:
  *       description: Forbidden. You are not allowed to perform this action.
+ *       example: Forbidden. You are not allowed to perform this action.
  *     NotFoundException:
  *       description: Not found. Couldn't find any user.
+ *       example: Not found. Couldn't find any user.
  *     UnauthorizedException:
  *       description: Unauthorized. You are not allowed to perform this action.
+ *       example: Unauthorized. You are not allowed to perform this action.
  *   schemas:
  *     UserDTO:
  *       type: object
@@ -25,11 +28,11 @@
  *           description: The user's name.
  *         createdAt:
  *           type: string
+ *           format: date-time
  *           description: Datetime when the user was created in db.        
  *         isPrivate:
  *           type: boolean
  *           description: Privacy of the user account.
- *         
  *       example:
  *         id: abcdefg-hijklmn-opqrstu-vwxyz-1
  *         name: JohnDoe
@@ -37,7 +40,7 @@
  *         isPrivate: true
  *     ExtendedUserDTO:
  *       allOf:
- *         - $ref: '#/componentes/schemas/UserDTO'
+ *         - $ref: '#/components/schemas/UserDTO'
  *         - type: object
  *           required:
  *             - email
@@ -70,7 +73,7 @@
  *           description: The user's name.
  *         username:
  *           type: string
- *           description: The user's username..        
+ *           description: The user's username.       
  *         profilePicture:
  *           type: string | null
  *           description: The user's profile picture.
@@ -85,10 +88,11 @@
  * @swagger
  * tags:
  *   name: User
- *   description: Endpoints for getting user information
+ *   description: Endpoints for getting user information.
  * /api/user:
  *   get:
  *     summary: Returns recomended users paginated.
+ *     tags: [User]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -112,6 +116,56 @@
  *               $ref: '#/components/responses/NotFoundException'
  *       500:
  *         description: Some server error.
+ *         example: Server error.
+ *   delete:
+ *     summary: Deletes the logged user.
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The user has been deleted.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserDTO'
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
+ * api/user/me:
+ *   get:
+ *     summary: Returns information about the logged user.
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Returns the logged user's info.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserDTO'
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       404:
+ *         description: Not found that user ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
  * /api/user/{userId}:
  *   get:
  *     summary: Returns information about an user by id.
@@ -140,14 +194,14 @@
  *             schema:
  *               $ref: '#/components/responses/UnauthorizedException'
  *       404:
- *         description: There is a user in the system with that user ID.
+ *         description: Not found that user ID.
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/responses/NotFoundException'
  *       500:
  *         description: Some server error.
- * 
+ *         example: Server error.
  */
 import { Request, Response, Router } from 'express'
 import HttpStatus from 'http-status'
@@ -203,5 +257,5 @@ userRouter.delete('/', async (req: Request, res: Response) => {
 
   await service.deleteUser(userId)
 
-  return res.status(HttpStatus.OK)
+  return res.status(HttpStatus.OK).send(`Deleted post ${userId}`)
 })

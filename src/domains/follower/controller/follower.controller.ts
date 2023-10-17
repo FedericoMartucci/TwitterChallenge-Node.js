@@ -9,8 +9,10 @@
  *   responses:
  *     ForbiddenException:
  *       description: Forbidden. You are not allowed to perform this action.
+ *       example: Forbidden. You are not allowed to perform this action.
  *     NotFoundException:
  *       description: Not found. Couldn't find any user.
+ *       example: Not found. Couldn't find any user.
  *   schemas:
  *     FollowDTO:
  *       type: object
@@ -25,9 +27,8 @@
  *           type: string | undefined 
  *           description: The id of the user who is followed.
  *         createdAt:
- * 
- * 
  *           type: string
+ *           format: date-time
  *           description: Datetime when the follow is saved in db.
  *       example:
  *         id: abcdefg-hijklmn-opqrstu-vwxyz-1
@@ -39,10 +40,10 @@
  * @swagger
  * tags:
  *   name: Follow
- *   description: The auth managing API
+ *   description: The follow managing API.
  * /api/follower/follow/{userId}:
  *   post:
- *     summary: A logged user start following another user
+ *     summary: A logged user start following another user.
  *     tags: [Follow]
  *     parameters:
  *       - in: path
@@ -75,9 +76,10 @@
  *               $ref: '#/components/responses/NotFoundException'
  *       500:
  *         description: Some server error.
+ *         example: Server error.
   * /api/follower/unfollow/{userId}:
  *   post:
- *     summary: A logged user unfollow another user
+ *     summary: A logged user unfollow another user.
  *     tags: [Follow]
  *     parameters:
  *       - in: path
@@ -85,7 +87,7 @@
  *         required: true
  *         schema:
  *           type: string
- *         description: The user ID
+ *         description: The user ID.
  *         example: abcdefg-hijklmn-opqrstu-vwxyz-3
  *     security:
  *       - bearerAuth: []
@@ -106,6 +108,7 @@
  *               $ref: '#/components/responses/NotFoundException'
  *       500:
  *         description: Some server error.
+ *         example: Server error.
  */
 import { Request, Response, Router } from 'express'
 import HttpStatus from 'http-status'

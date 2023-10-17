@@ -9,60 +9,230 @@
  *   responses:
  *     ForbiddenException:
  *       description: Forbidden. You are not allowed to perform this action.
+ *       example: Forbidden. You are not allowed to perform this action.
  *     NotFoundException:
  *       description: Not found. Couldn't find any user.
+ *       example: Not found. Couldn't find any user.
+ *     UnauthorizedException:
+ *       description: Unauthorized. You are not allowed to perform this action.
+ *       example: Unauthorized. You are not allowed to perform this action.
  *   schemas:
- *     FollowDTO:
+ *     CreatePostInputDTO:
+ *       type: object
+ *       required:
+ *         - content
+ *       properties:
+ *         content:
+ *           type: string
+ *           description: Post's content/description.
+ *         images:
+ *           type: array
+ *           items:
+ *             type: string  
+ *           description: List of post's images.
+ *       example:
+ *         content: example content.
+ *         images: [example1.png, example2.png]
+ *     PostDTO:
  *       type: object
  *       properties:
  *         id:
  *           type: string
- *           description: The 32-characters-id of the follow.
- *         followerId:
- *           type: string | undefined    
- *           description: The id of the user who follows.
- *         followedId:
- *           type: string | undefined 
- *           description: The id of the user who is followed.
- *         createdAt:
- * 
- * 
+ *           description: Post's ID.
+ *         authorId:
  *           type: string
- *           description: Datetime when the follow is saved in db.
+ *           description: Author's ID.
+ *         content:
+ *           type: string
+ *           description: Post's content.
+ *         images:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: List of post's images.
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Post's date.
  *       example:
  *         id: abcdefg-hijklmn-opqrstu-vwxyz-1
- *         followerId: abcdefg-hijklmn-opqrstu-vwxyz-2
- *         followedId: abcdefg-hijklmn-opqrstu-vwxyz-3
+ *         authorId: abcdefg-hijklmn-opqrstu-vwxyz-2
+ *         content: example content.
+ *         images: [example1.png, example2.png]
  *         createdAt: 2023-10-12T15:18:32.546Z
+ * 
  */
 /**
  * @swagger
  * tags:
- *   name: Follow
- *   description: The auth managing API
- * /api/follower/follow/{userId}:
+ *   name: Post
+ *   description: Endpoints referred to posts.
+ * /api/post:
+ *   get:
+ *     summary: Returns post feed paginated.
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Returns an array of posts of user with public accounts or that I follow.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PostDTO'
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       404:
+ *         description: Posts not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
  *   post:
- *     summary: A logged user start following another user
- *     tags: [Follow]
+ *     summary: Creates a post.
+ *     tags: [Post]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreatePostInputDTO'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       201:
+ *         description: Creates a post and returns it.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PostDTO'
+ *       400:
+ *         description: Invalid request body.
+ *       401:
+ *         description: You must be logged to execute that action.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
+ * /api/post/{post_id}:
+ *   get:
+ *     summary: Returns a post by id.
+ *     tags: [Post]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: post_id
  *         required: true
  *         schema:
  *           type: string
- *         description: The user ID
+ *         description: The post ID.
  *         example: abcdefg-hijklmn-opqrstu-vwxyz-3
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Logged user has started following another user.
+ *         description: Returns the post requested.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/FollowDTO'
+ *               $ref: '#/components/schemas/PostDTO'
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
  *       403:
- *         description: Logged user already follow him or he cannot follow himself.
+ *         description: You have to follow the owner of the post to see it.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/ForbiddenException'
+ *       404:
+ *         description: Post not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
+ *   delete:
+ *     summary: Deletes a post by id.
+ *     tags: [Post]
+ *     parameters:
+ *       - in: path
+ *         name: post_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The post ID.
+ *         example: abcdefg-hijklmn-opqrstu-vwxyz-3
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Post deleted successfully.
+ *       401:
+ *         description: You must be logged to execute that action.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       403:
+ *         description: You can only delete your posts.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/ForbiddenException'
+ *       404:
+ *         description: PostID not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
+ *         
+ * /api/post/by_user/{user_id}:
+ *   get:
+ *     summary: Returns all user posts by id.
+ *     tags: [Post]
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID.
+ *         example: abcdefg-hijklmn-opqrstu-vwxyz-3
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Returns an array of the post that were posted by userId.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PostDTO'
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       403:
+ *         description: You have to follow that user to see his posts.
  *         content:
  *           application/json:
  *             schema:
@@ -75,37 +245,7 @@
  *               $ref: '#/components/responses/NotFoundException'
  *       500:
  *         description: Some server error.
-  * /api/follower/unfollow/{userId}:
- *   post:
- *     summary: A logged user unfollow another user
- *     tags: [Follow]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
- *         description: The user ID
- *         example: abcdefg-hijklmn-opqrstu-vwxyz-3
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Logged user unfollowed another user.
- *       403:
- *         description: Logged user does not follow him or he cannot unfollow himself.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/responses/ForbiddenException'
- *       404:
- *         description: UserID not found.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/responses/NotFoundException'
- *       500:
- *         description: Some server error.
+ *         example: Server error.
  */
 import { Request, Response, Router } from 'express'
 import HttpStatus from 'http-status'

@@ -2,16 +2,18 @@
  * @swagger
  * tags:
  *   name: Health
- *   description: Checking server health
+ *   description: Checking server health.
  * /api/health:
  *   get:
- *     summary: Checks if the server is alive
+ *     summary: Checks if the server is alive.
  *     tags: [Health]
  *     responses:
  *       200:
  *         description: The server is on.
+ *         example:
  *       500:
  *         description: Some server error.
+ *         example: Server error.
  *
  */
 import { Request, Response, Router } from 'express'

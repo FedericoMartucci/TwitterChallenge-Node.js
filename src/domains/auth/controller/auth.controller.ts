@@ -1,6 +1,13 @@
 /**
  * @swagger
  * components:
+ *   responses:
+ *     ForbiddenException:
+ *       description: Forbidden. You are not allowed to perform this action.
+ *       example: Forbidden. You are not allowed to perform this action.
+ *     NotFoundException:
+ *       description: Not found. Couldn't find any user.
+ *       example: Not found. Couldn't find any user.
  *   schemas:
  *     TokenDTO:
  *       type: object
@@ -9,7 +16,7 @@
  *       properties:
  *         token:
  *           type: string
- *           description: Json Web Token with 24hr expiration
+ *           description: Json Web Token with 24hr expiration.
  *       example:
  *         token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhMjM5MzFhYS05YWEwLTRhNWYtYTMyMS05NGY5NjY5YzVkM2IiLCJpYXQiOjE2OTcxMjM4OTksImV4cCI6MTY5NzIxMDI5OX0.EXbjRcjaV7qifFbtImuCk7NZRDRcmRY-W11ynWWBWyY
  *     SignupInputDTO:
@@ -27,10 +34,11 @@
  *           description: The user's username.
  *         password:
  *           type: string
+ *           format: password
  *           description: The user's password.
  *         isPrivate:
  *           type: boolean
- *           description: Privacy of the user account
+ *           description: Privacy of the user account.
  *       example:
  *         email: example@user.com
  *         username: username
@@ -45,13 +53,14 @@
  *       properties:
  *         email:
  *           type: string
- *           description: The email address of the user
+ *           description: The email address of the user.
  *         username:
  *           type: string
- *           description: The username of the user
+ *           description: The username of the user.
  *         password:
  *           type: string
- *           description: The password of the user
+ *           format: password
+ *           description: The password of the user.
  *       example:
  *         email: example@user.com
  *         username: username
@@ -61,10 +70,10 @@
  * @swagger
  * tags:
  *   name: Auth
- *   description: The auth managing API
+ *   description: The auth managing API.
  * /api/auth/signup:
  *   post:
- *     summary: Create a new user
+ *     summary: Create a new user.
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -87,11 +96,13 @@
  *               $ref: '#/components/schemas/SignupInputDTO'
  *       400:
  *         description: Invalid request body.
+ *         example: Validation error.
  *       500:
  *         description: Some server error.
+ *         example: Server error.
  * /api/auth/login:
  *   post:
- *     summary: Login a user
+ *     summary: Login a user.
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -108,10 +119,16 @@
  *               $ref: '#/components/schemas/TokenDTO'
  *       400:
  *         description: Invalid request body.
+ *         example: Validation error.
  *       404:
  *         description: Could not find any user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
  *       500:
  *         description: Some server error.
+ *         example: Server error.
  *
  */
 import { Request, Response, Router } from 'express'

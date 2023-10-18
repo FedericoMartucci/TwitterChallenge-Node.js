@@ -82,4 +82,5 @@ model Reaction{
 enum ReactionType {
   LIKE
   RETWEET
+  COMMENT
 }

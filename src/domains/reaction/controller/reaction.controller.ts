@@ -153,7 +153,7 @@ reactionRouter.post('/:postId', BodyValidation(ReactionInputDTO), async (req: Re
   const { userId } = res.locals.context
   const { postId } = req.params
   const reactionType = req.body
-
+  
   const reaction = await service.react(userId, postId, reactionType)
 
   return res.status(HttpStatus.OK).json(reaction)

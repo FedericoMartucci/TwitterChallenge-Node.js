@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "ReactionType" AS ENUM ('LIKE', 'RETWEET');
+CREATE TYPE "ReactionType" AS ENUM ('LIKE', 'RETWEET', 'COMMENT');
 
 -- CreateTable
 CREATE TABLE "User" (

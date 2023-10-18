@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, NotFoundException, db } from "@utils"
+import { ConflictException, NotFoundException, db } from "@utils"
 import { ReactionService } from "../service"
 import { ReactionRepository } from "../repository"
 import { ReactionDTO, ReactionInputDTO } from "../dto"
@@ -19,7 +19,7 @@ export class ReactionServiceImpl implements ReactionService {
 
         const user:UserDTO|null = await new UserRepositoryImpl(db).getById(userId)
 
-        return await this.repository.react(user as UserDTO, post as PostDTO, reactionType)
+        return await this.repository.createReaction(user as UserDTO, post as PostDTO, reactionType)
     }
   
     async deleteReaction (userId: string, postId: string, reactionType: ReactionInputDTO): Promise<string> {

@@ -4,9 +4,14 @@ export enum ReactionType{
     LIKE = 'LIKE',
     RETWEET = 'RETWEET'
 }
+export enum ReactionTypeExtended{
+    LIKE = 'LIKE',
+    RETWEET = 'RETWEET',
+    COMMENT = 'COMMENT'
+}
 
 export class ReactionDTO{
-    constructor(id: string, userId: string, postId: string, reactionType: ReactionType, createdAt: Date){
+    constructor(id: string, userId: string, postId: string, reactionType: ReactionTypeExtended, createdAt: Date){
         this.id = id
         this.userId = userId
         this.postId = postId
@@ -17,15 +22,15 @@ export class ReactionDTO{
     id: string
     userId: string
     postId: string
-    reactionType: ReactionType
+    reactionType: ReactionTypeExtended
     createdAt: Date
 }
 export class ReactionInputDTO{
     @IsNotEmpty()
     @IsEnum(ReactionType)
-    reactionType: ReactionType
+    reactionType: ReactionTypeExtended
 
-    constructor(reactionType: ReactionType){
+    constructor(reactionType: ReactionTypeExtended){
         this.reactionType = reactionType
     }
 }

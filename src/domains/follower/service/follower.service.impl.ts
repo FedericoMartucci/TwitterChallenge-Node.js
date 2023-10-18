@@ -5,7 +5,6 @@ import { FollowerRepository } from "../repository"
 import { FollowDTO } from "../dto"
 import { UserDTO } from "@domains/user/dto"
 import { UserRepositoryImpl } from "@domains/user/repository"
-import { log } from "console"
 
 export class FollowerServiceImpl implements FollowerService {
     constructor (private readonly repository: FollowerRepository) {}

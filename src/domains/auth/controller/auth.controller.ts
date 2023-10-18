@@ -2,6 +2,9 @@
  * @swagger
  * components:
  *   responses:
+ *     ConflictException:
+ *       description: The user already exists.
+ *       example: The user already exists.
  *     ForbiddenException:
  *       description: Forbidden. You are not allowed to perform this action.
  *       example: Forbidden. You are not allowed to perform this action.
@@ -88,15 +91,15 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/TokenDTO'
- *       209:
+ *       400:
+ *         description: Invalid request body.
+ *         example: Validation error.
+ *       409:
  *         description: The user already exists.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/SignupInputDTO'
- *       400:
- *         description: Invalid request body.
- *         example: Validation error.
+ *               $ref: '#/components/responses/ConflictException'
  *       500:
  *         description: Some server error.
  *         example: Server error.

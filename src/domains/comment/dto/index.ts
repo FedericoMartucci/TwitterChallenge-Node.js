@@ -15,14 +15,13 @@ export class CommentInputDTO{
 export class CommentDTO{
     id: string
     authorId: string
-    postId: string
+    postId: string | undefined
     comment: string
     createdAt: Date
 
-    constructor (id: string, authorId: string, postId: string, comment: string, createdAt: Date) {
+    constructor (id: string, authorId: string, comment: string, createdAt: Date) {
         this.id = id
         this.authorId = authorId
-        this.postId = postId
         this.comment = comment
         this.createdAt = createdAt
     }

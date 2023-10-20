@@ -34,6 +34,7 @@ CREATE TABLE "Post" (
     "authorId" UUID NOT NULL,
     "content" VARCHAR(240) NOT NULL,
     "images" TEXT[],
+    "isComment" BOOLEAN NOT NULL DEFAULT FALSE,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),

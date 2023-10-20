@@ -30,5 +30,10 @@ export class ReactionServiceImpl implements ReactionService {
         await this.repository.delete(reaction.id)
         return reaction.id
     }
+    async getReactionsByAuthorId (userId: string, authorId: string): Promise<ReactionDTO[]>{
+        const reactions = await this.repository.getByAuthorId(userId, authorId)
+        if(!reactions.length) throw new NotFoundException('reactions')
+        return reactions
+    }
   }
   

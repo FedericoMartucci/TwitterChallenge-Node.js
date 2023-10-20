@@ -169,3 +169,12 @@ reactionRouter.delete('/:postId', BodyValidation(ReactionInputDTO), async (req: 
 
   return res.status(HttpStatus.OK).send(`Deleted reaction ${reactionId}`)
 })
+
+reactionRouter.get('/by_user/:userId', async (req: Request, res: Response) => {
+  const { userId } = res.locals.context
+  const { userId: authorId } = req.params
+  
+  const reactions = await service.getReactionsByAuthorId(userId, authorId)
+
+  return res.status(HttpStatus.OK).json(reactions)
+})

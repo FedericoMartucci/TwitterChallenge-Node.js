@@ -24,13 +24,14 @@ commentRouter.post('/:postId', BodyValidation(CommentInputDTO), async (req: Requ
     return res.status(HttpStatus.OK).json(commentInfo)
 })
 
-// commentRouter.get('/:post_id', async (req: Request, res: Response) => {
-//   const data = req.body
-
-//   const token = await service.login(data)
-
-//   return res.status(HttpStatus.OK).json(token)
-// })
+commentRouter.get('/by_user/:userId', async (req: Request, res: Response) => {
+    const { userId } = res.locals.context
+    const { userId: authorId } = req.params
+    
+    const comments = await service.getCommentsByAuthorId(userId, authorId)
+  
+    return res.status(HttpStatus.OK).json(comments)
+})
 // commentRouter.delete('/:post_id', BodyValidation(SignupInputDTO), async (req: Request, res: Response) => {
 //     const data = req.body
   

@@ -19,5 +19,11 @@ export class CommentServiceImpl implements CommentService {
         await new ReactionRepositoryImpl(db).createReaction(user as UserDTO, post as PostDTO, new ReactionInputDTO('COMMENT' as ReactionTypeExtended))
         return await this.repository.createComment(user as UserDTO, post as PostDTO, commentary)
     }
+
+    async getCommentsByAuthorId (userId: string, authorId: string): Promise<CommentDTO[]>{
+        const comments = await this.repository.getByAuthorId(userId, authorId)
+        if(!comments.length) throw new NotFoundException('comments')
+        return comments
+    }
   }
   

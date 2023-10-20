@@ -6,4 +6,5 @@ export interface ReactionRepository {
     createReaction: (user: UserDTO, post: PostDTO, reactionType: ReactionInputDTO) => Promise<ReactionDTO>
     delete: (reactionId: string) => Promise<void>
     getById: (userId: string, postId: string, reactionType: ReactionInputDTO) => Promise<ReactionDTO | null>
+    getByAuthorId: (userId: string, authorId: string) => Promise<ReactionDTO[]>
 }

@@ -55,6 +55,7 @@ model Post {
   authorId String   @db.Uuid // Foreign Key
   content  String   @db.VarChar(240) // Limit the content to 240 characters
   images   String[]
+  isComment Boolean @default(false)
   reactions Reaction[]
 
   createdAt DateTime  @default(now())

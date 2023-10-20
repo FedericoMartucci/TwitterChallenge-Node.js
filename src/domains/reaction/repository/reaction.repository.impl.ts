@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
 import { ReactionRepository } from '.'
-import { ReactionDTO, ReactionInputDTO, ReactionTypeExtended } from '../dto'
+import { ReactionDTO, ReactionInputDTO, ReactionType, ReactionTypeExtended } from '../dto'
 import { UserDTO } from '@domains/user/dto'
 import { PostDTO } from '@domains/post/dto'
 
@@ -42,6 +42,35 @@ export class ReactionRepositoryImpl implements ReactionRepository {
     return reaction !== null? new ReactionDTO(reaction.id, reaction.userId, reaction.postId, reaction.reactionType as ReactionTypeExtended, reaction.createdAt) : null
   }
 
+  async getByAuthorId (userId: string, authorId: string): Promise<ReactionDTO[]>{
+    const reactions = await this.db.reaction.findMany({
+        where: {
+            userId: authorId,
+            OR: [
+                  {
+                    user: {
+                      followers: {
+                        some: {
+                          followerId: userId,
+                        },
+                      },
+                    },
+                  },
+                  {
+                    userId: userId,
+                  },
+                  {
+                    user: {
+                      isPrivate: false,
+                    },
+                  },
+                ],
+            NOT: {
+                  reactionType: 'COMMENT' as ReactionType
+            },
+        },
+    })
+    return reactions.map(reactions => new ReactionDTO(reactions.id, reactions.userId, reactions.postId, reactions.reactionType as ReactionTypeExtended, reactions.createdAt))
 }
 
-
+}

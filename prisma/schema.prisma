@@ -19,10 +19,10 @@ datasource db {
 model User {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid // Primary Key
 
-  username String  @unique // Unique constraint
-  name     String? @db.VarChar(35) // Limit display name to 35 characters
-  email    String  @unique // Unique constraint
-  password String
+  username  String  @unique // Unique constraint
+  name      String? @db.VarChar(35) // Limit display name to 35 characters
+  email     String  @unique // Unique constraint
+  password  String
   isPrivate Boolean
 
   createdAt DateTime  @default(now())
@@ -31,8 +31,8 @@ model User {
 
   posts     Post[]
   reactions Reaction[]
-  follows   Follow[] @relation(name: "follows")
-  followers Follow[] @relation(name: "followers")
+  follows   Follow[]   @relation(name: "follows")
+  followers Follow[]   @relation(name: "followers")
 }
 
 model Follow {
@@ -52,11 +52,11 @@ model Follow {
 model Post {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid // Primary Key
 
-  authorId String   @db.Uuid // Foreign Key
-  content  String   @db.VarChar(240) // Limit the content to 240 characters
-  images   String[]
-  isComment Boolean @default(false)
-  reactions Reaction[]
+  authorId     String        @db.Uuid // Foreign Key
+  content      String        @db.VarChar(240) // Limit the content to 240 characters
+  images       String[]
+  reactions    Reaction[]
+  commentsInfo CommentInfo[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -65,11 +65,20 @@ model Post {
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade) // One to many
 }
 
-model Reaction{
+model CommentInfo {
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  postId    String @db.Uuid
+  userId    String @db.Uuid
+  commentId String @db.Uuid
+
+  post Post @relation(fields: [commentId], references: [id], onDelete: Cascade) // One to many
+}
+
+model Reaction {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid // Primary Key
 
-  userId String @db.Uuid //Foreign Key
-  postId String @db.Uuid //Foreign Key
+  userId       String       @db.Uuid //Foreign Key
+  postId       String       @db.Uuid //Foreign Key
   reactionType ReactionType
 
   createdAt DateTime  @default(now())
@@ -83,5 +92,4 @@ model Reaction{
 enum ReactionType {
   LIKE
   RETWEET
-  COMMENT
 }

@@ -227,7 +227,7 @@ userRouter.get('/', async (req: Request, res: Response) => {
   return res.status(HttpStatus.OK).json(users)
 })
 
-userRouter.post('/update', async (req: Request, res: Response) => {
+userRouter.post('/update/privacy', async (req: Request, res: Response) => {
   const { userId } = res.locals.context
   const isPrivate: boolean = req.body.isPrivate
 
@@ -235,6 +235,15 @@ userRouter.post('/update', async (req: Request, res: Response) => {
 
   return res.status(HttpStatus.OK).json(users)
 })
+
+
+// userRouter.post('/update/profile_picture', async (req: Request, res: Response) => {
+//   const { userId } = res.locals.context
+
+//   const users = await service.setUserPrivacy(userId, isPrivate)
+
+//   return res.status(HttpStatus.OK).json(users)
+// })
 
 userRouter.get('/me', async (req: Request, res: Response) => {
   const { userId } = res.locals.context

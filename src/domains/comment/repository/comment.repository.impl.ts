@@ -3,7 +3,7 @@ import { CommentRepository } from "./comment.repository";
 import { UserDTO } from "@domains/user/dto";
 import { CommentDTO, CommentInputDTO } from "../dto";
 import { PrismaClient } from "@prisma/client";
-import { ReactionType, ReactionTypeExtended } from "@domains/reaction/dto";
+import { ReactionType } from "@domains/reaction/dto";
 
 export class CommentRepositoryImpl implements CommentRepository{
     constructor (private readonly db: PrismaClient) {}
@@ -14,17 +14,26 @@ export class CommentRepositoryImpl implements CommentRepository{
                     connect: { id: user.id },
                   },
                 content: commentInput.comment,
-                isComment: true,
-            }
+                commentsInfo: {
+                    create: {
+                        postId: post.id,
+                        userId: user.id,
+                    },
+                },
+            },
         })
-        return new CommentDTO(comment.id, comment.authorId, comment.content, comment.createdAt)
+        return new CommentDTO(comment.id, comment.authorId, post.id, comment.content, comment.createdAt)
     }
 
     async getByAuthorId (userId: string, authorId: string): Promise<CommentDTO[]>{
         const comments = await this.db.post.findMany({
             where: {
-                isComment: true,
                 authorId: authorId,
+                commentsInfo: {
+                    some: {
+                        userId: authorId, 
+                    },
+                },
                 OR: [
                     {
                     author: {
@@ -46,6 +55,22 @@ export class CommentRepositoryImpl implements CommentRepository{
                 ],
             },
         })
-        return comments.map(comments => new CommentDTO(comments.id, comments.authorId, comments.content, comments.createdAt))
+
+        const commentIds = comments.map(comment => comment.id);
+
+        const commentInfo = await this.db.commentInfo.findMany({
+            where: {
+                commentId: {
+                    in: commentIds,
+                },
+            },
+        })
+        const commentDTOs = comments.map(comment => {
+            const matchingCommentInfo = commentInfo.find(ci => ci.commentId === comment.id);
+            const postId = matchingCommentInfo ? matchingCommentInfo.postId : '';
+            return new CommentDTO(comment.id, comment.authorId, postId, comment.content, comment.createdAt);
+          });
+        
+          return commentDTOs;
     }
 } 

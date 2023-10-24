@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
 import { ReactionRepository } from '.'
-import { ReactionDTO, ReactionInputDTO, ReactionType, ReactionTypeExtended } from '../dto'
+import { ReactionDTO, ReactionInputDTO, ReactionType } from '../dto'
 import { UserDTO } from '@domains/user/dto'
 import { PostDTO } from '@domains/post/dto'
 
@@ -20,7 +20,7 @@ export class ReactionRepositoryImpl implements ReactionRepository {
           },
        }
     })
-    return new ReactionDTO(reaction.id, reaction.userId, reaction.postId, reaction.reactionType as ReactionTypeExtended, reaction.createdAt)
+    return new ReactionDTO(reaction.id, reaction.userId, reaction.postId, reaction.reactionType as ReactionType, reaction.createdAt)
   }
 
   async delete (reactionId: string): Promise<void> {
@@ -39,7 +39,7 @@ export class ReactionRepositoryImpl implements ReactionRepository {
         reactionType: reactionType.reactionType,
       },
     })
-    return reaction !== null? new ReactionDTO(reaction.id, reaction.userId, reaction.postId, reaction.reactionType as ReactionTypeExtended, reaction.createdAt) : null
+    return reaction !== null? new ReactionDTO(reaction.id, reaction.userId, reaction.postId, reaction.reactionType as ReactionType, reaction.createdAt) : null
   }
 
   async getByAuthorId (userId: string, authorId: string): Promise<ReactionDTO[]>{
@@ -65,12 +65,9 @@ export class ReactionRepositoryImpl implements ReactionRepository {
                     },
                   },
                 ],
-            NOT: {
-                  reactionType: 'COMMENT' as ReactionType
-            },
         },
     })
-    return reactions.map(reactions => new ReactionDTO(reactions.id, reactions.userId, reactions.postId, reactions.reactionType as ReactionTypeExtended, reactions.createdAt))
+    return reactions.map(reactions => new ReactionDTO(reactions.id, reactions.userId, reactions.postId, reactions.reactionType as ReactionType, reactions.createdAt))
 }
 
 }

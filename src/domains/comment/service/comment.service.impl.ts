@@ -7,17 +7,23 @@ import { UserRepositoryImpl } from "@domains/user/repository"
 import { PostRepositoryImpl } from "@domains/post/repository"
 import { PostDTO } from "@domains/post/dto"
 import { ReactionRepositoryImpl } from "@domains/reaction/repository"
-import { ReactionInputDTO, ReactionTypeExtended } from "@domains/reaction/dto"
+import { ReactionInputDTO, ReactionType } from "@domains/reaction/dto"
+
+const postRepository: PostRepositoryImpl = new PostRepositoryImpl(db)
+const userRepository: UserRepositoryImpl = new UserRepositoryImpl(db)
 
 export class CommentServiceImpl implements CommentService {
-    constructor (private readonly repository: CommentRepository) {}
+    constructor (private readonly repository: CommentRepository) {
+    }
     
     async comment (userId: string, postId: string, commentary: CommentInputDTO): Promise<CommentDTO> {
-        const post: PostDTO|null = await new PostRepositoryImpl(db).getById(userId, postId)
+        const post: PostDTO|null = await postRepository.getById(userId, postId)
         if(!post) throw new NotFoundException('post')
-        const user:UserDTO|null = await new UserRepositoryImpl(db).getById(userId)
-        await new ReactionRepositoryImpl(db).createReaction(user as UserDTO, post as PostDTO, new ReactionInputDTO('COMMENT' as ReactionTypeExtended))
-        return await this.repository.createComment(user as UserDTO, post as PostDTO, commentary)
+
+        const user:UserDTO|null = await userRepository.getById(userId)
+        if(!user) throw new NotFoundException('user')
+
+        return await this.repository.createComment(user, post as PostDTO, commentary)
     }
 
     async getCommentsByAuthorId (userId: string, authorId: string): Promise<CommentDTO[]>{

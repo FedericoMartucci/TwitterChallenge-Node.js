@@ -38,7 +38,11 @@ export class PostRepositoryImpl implements PostRepository {
             },
           },
         ],
-        isComment: false,
+        commentsInfo: {
+          every: {
+              commentId: undefined,
+          }
+        }
       },
       cursor: options.after ? { id: options.after } : (options.before) ? { id: options.before } : undefined,
       skip: options.after ?? options.before ? 1 : undefined,
@@ -86,7 +90,6 @@ export class PostRepositoryImpl implements PostRepository {
           },
         ],
         id: postId,
-        isComment: false,
       }
     })
     return (post != null) ? new PostDTO(post) : null
@@ -95,7 +98,6 @@ export class PostRepositoryImpl implements PostRepository {
   async getByAuthorId (userId: string, authorId: string): Promise<PostDTO[]> {
     const posts = await this.db.post.findMany({
       where: {
-        isComment: false,
         authorId: authorId,
         OR: [
           {
@@ -111,6 +113,11 @@ export class PostRepositoryImpl implements PostRepository {
             authorId: userId,
           },
         ],
+        commentsInfo: {
+          none: {
+              userId: authorId,
+          }
+        }
       },
     })
     return posts.map(post => new PostDTO(post))

@@ -24,6 +24,16 @@ commentRouter.post('/:postId', BodyValidation(CommentInputDTO), async (req: Requ
     return res.status(HttpStatus.OK).json(commentInfo)
 })
 
+commentRouter.get('/:postId', async (req: Request, res: Response) => {
+    const { userId } = res.locals.context
+    const { postId } = req.params
+    const { limit, before, after } = req.query as Record<string, string>
+
+    const comments = await service.getCommentsByPostId(userId, postId, { limit: Number(limit), before, after })
+    
+    return res.status(HttpStatus.OK).json(comments)
+})
+
 commentRouter.get('/by_user/:userId', async (req: Request, res: Response) => {
     const { userId } = res.locals.context
     const { userId: authorId } = req.params

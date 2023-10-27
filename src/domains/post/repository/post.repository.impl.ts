@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import { CursorPagination } from '@types'
 
 import { PostRepository } from '.'
-import { CreatePostInputDTO, PostDTO } from '../dto'
+import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from '../dto'
 import { ReactionType } from '@domains/reaction/dto'
 
 export class PostRepositoryImpl implements PostRepository {
@@ -19,7 +19,7 @@ export class PostRepositoryImpl implements PostRepository {
     return new PostDTO(post)
   }
 
-  async getAllByDatePaginated (userId: string, options: CursorPagination): Promise<PostDTO[]> {
+  async getAllByDatePaginated (userId: string, options: CursorPagination): Promise<ExtendedPostDTO[]> {
     const posts = await this.db.post.findMany({
       where: {
         OR: [
@@ -54,9 +54,40 @@ export class PostRepositoryImpl implements PostRepository {
         {
           id: 'asc'
         }
-      ]
+      ],
+      include: {
+        author: true,
+        reactions: true,
+        commentsInfo: true,
+      }
     })
-    return posts.map(post => new PostDTO(post))
+    const extendedPostDTOs: ExtendedPostDTO[] = posts.map(comment => { 
+        const qtyLikes: number = posts.reduce((totalLikes, comment) => {
+        const likesInPost = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
+        return totalLikes + likesInPost;
+      }, 0);
+    const qtyRetweets: number = posts.reduce((totalRetweets, comment) => {
+        const retweetsInPost = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
+        return totalRetweets + retweetsInPost;
+      }, 0);
+    const qtyComments: number = posts.reduce((totalComments, comment) => {
+        const commentsInPost = comment.commentsInfo.length;
+        return totalComments + commentsInPost;
+      }, 0);
+    
+    return new ExtendedPostDTO({
+        id: comment.id,
+        authorId: comment.authorId,
+        content: comment.content,
+        images: comment.images,
+        createdAt: comment.createdAt,
+        author: comment.author,
+        qtyLikes,
+        qtyRetweets,
+        qtyComments,
+    })});
+  return extendedPostDTOs
+
   }
 
   async delete (postId: string): Promise<void> {
@@ -95,7 +126,7 @@ export class PostRepositoryImpl implements PostRepository {
     return (post != null) ? new PostDTO(post) : null
   }
 
-  async getByAuthorId (userId: string, authorId: string): Promise<PostDTO[]> {
+  async getByAuthorId (userId: string, authorId: string): Promise<ExtendedPostDTO[]> {
     const posts = await this.db.post.findMany({
       where: {
         authorId: authorId,
@@ -119,8 +150,38 @@ export class PostRepositoryImpl implements PostRepository {
           }
         }
       },
+      include: {
+        author: true,
+        reactions: true,
+        commentsInfo: true,
+      }
     })
-    return posts.map(post => new PostDTO(post))
+    const extendedPostDTOs: ExtendedPostDTO[] = posts.map(comment => { 
+          const qtyLikes: number = posts.reduce((totalLikes, comment) => {
+          const likesInPost = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
+          return totalLikes + likesInPost;
+      }, 0);
+      const qtyRetweets: number = posts.reduce((totalRetweets, comment) => {
+          const retweetsInPost = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
+          return totalRetweets + retweetsInPost;
+      }, 0);
+      const qtyComments: number = posts.reduce((totalComments, comment) => {
+          const commentsInPost = comment.commentsInfo.length;
+          return totalComments + commentsInPost;
+      }, 0);
+      
+      return new ExtendedPostDTO({
+          id: comment.id,
+          authorId: comment.authorId,
+          content: comment.content,
+          images: comment.images,
+          createdAt: comment.createdAt,
+          author: comment.author,
+          qtyLikes,
+          qtyRetweets,
+          qtyComments,
+  })});
+  return extendedPostDTOs
   }
 }
 

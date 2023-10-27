@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { FollowerRepository } from "./follower.repository";
 import { FollowDTO } from "../dto";
-import { UserDTO } from "@domains/user/dto";
+import { UserDTO, UserViewDTO } from "@domains/user/dto";
 export class FollowerRepositoryImpl implements FollowerRepository {
   constructor (private readonly db: PrismaClient) {}
   

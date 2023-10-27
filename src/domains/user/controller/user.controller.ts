@@ -2,7 +2,7 @@
  * @swagger
  * components:
  *   securitySchemes:
- *     bearerAuth:            
+ *     bearerAuth:
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
@@ -24,12 +24,12 @@
  *           type: string
  *           description: The 32-characters-id of the follow.
  *         name:
- *           type: string | null    
+ *           type: string | null
  *           description: The user's name.
  *         createdAt:
  *           type: string
  *           format: date-time
- *           description: Datetime when the user was created in db.        
+ *           description: Datetime when the user was created in db.
  *         isPrivate:
  *           type: boolean
  *           description: Privacy of the user account.
@@ -51,17 +51,17 @@
  *               type: string
  *               description: The user's email address.
  *             user:
- *               type: string   
+ *               type: string
  *               description: The user's username.
  *             password:
  *               type: string
- *               description: The user's password.        
- *         
+ *               description: The user's password.
+ *
  *           example:
  *             email: example@user.com
  *             user: username
  *             password: Password123.
- * 
+ *
  *     UserViewDTO:
  *       type: object
  *       properties:
@@ -69,15 +69,15 @@
  *           type: string
  *           description: The 32-characters-id of the follow.
  *         name:
- *           type: string   
+ *           type: string
  *           description: The user's name.
  *         username:
  *           type: string
- *           description: The user's username.       
+ *           description: The user's username.
  *         profilePicture:
  *           type: string | null
  *           description: The user's profile picture.
- *         
+ *
  *       example:
  *         id: abcdefg-hijklmn-opqrstu-vwxyz-1
  *         name: JohnDoe
@@ -212,6 +212,7 @@ import { db } from '@utils'
 
 import { UserRepositoryImpl } from '../repository'
 import { UserService, UserServiceImpl } from '../service'
+import { s3 } from '@utils/aws'
 
 export const userRouter = Router()
 
@@ -227,6 +228,15 @@ userRouter.get('/', async (req: Request, res: Response) => {
   return res.status(HttpStatus.OK).json(users)
 })
 
+userRouter.get('/by_username/:username', async (req: Request, res: Response) => {
+  const { userId } = res.locals.context
+  const { username } = req.params
+  const { limit, before, after } = req.query as Record<string, string>
+
+  const users = await service.getUsersByUsername(userId, username, { limit: Number(limit), before, after })
+  return res.status(HttpStatus.OK).json(users)
+})
+
 userRouter.post('/update/privacy', async (req: Request, res: Response) => {
   const { userId } = res.locals.context
   const isPrivate: boolean = req.body.isPrivate
@@ -237,13 +247,12 @@ userRouter.post('/update/privacy', async (req: Request, res: Response) => {
 })
 
 
-// userRouter.post('/update/profile_picture', async (req: Request, res: Response) => {
-//   const { userId } = res.locals.context
+userRouter.put('/update/profile_picture', async (req: Request, res: Response) => {
+  const { userId } = res.locals.context
+  const users = await service.setUserProfilePicture(userId)
 
-//   const users = await service.setUserPrivacy(userId, isPrivate)
-
-//   return res.status(HttpStatus.OK).json(users)
-// })
+  return res.status(HttpStatus.OK).json(users)
+})
 
 userRouter.get('/me', async (req: Request, res: Response) => {
   const { userId } = res.locals.context

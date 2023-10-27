@@ -1,28 +1,30 @@
-import { PostDTO } from "@domains/post/dto";
+import { ExtendedPostDTO, PostDTO } from "@domains/post/dto";
 import { CommentRepository } from "./comment.repository";
 import { UserDTO } from "@domains/user/dto";
 import { CommentDTO, CommentInputDTO } from "../dto";
 import { PrismaClient } from "@prisma/client";
 import { ReactionType } from "@domains/reaction/dto";
+import { CursorPagination } from "@types";
+import { ReactionServiceImpl } from "@domains/reaction/service";
 
 export class CommentRepositoryImpl implements CommentRepository{
     constructor (private readonly db: PrismaClient) {}
-    async createComment(user: UserDTO, post: PostDTO, commentInput: CommentInputDTO): Promise<CommentDTO> {
+    async createComment(userId: string, postId: string, commentInput: CommentInputDTO): Promise<CommentDTO> {
         const comment = await this.db.post.create({
             data: {
                 author: {
-                    connect: { id: user.id },
+                    connect: { id: userId },
                   },
                 content: commentInput.comment,
                 commentsInfo: {
                     create: {
-                        postId: post.id,
-                        userId: user.id,
+                        postId: postId,
+                        userId: userId,
                     },
                 },
             },
         })
-        return new CommentDTO(comment.id, comment.authorId, post.id, comment.content, comment.createdAt)
+        return new CommentDTO(comment.id, comment.authorId, postId, comment.content, comment.createdAt)
     }
 
     async getByAuthorId (userId: string, authorId: string): Promise<CommentDTO[]>{
@@ -72,5 +74,77 @@ export class CommentRepositoryImpl implements CommentRepository{
           });
         
           return commentDTOs;
+    }
+
+    async getByPostId (userId: string, postId: string, options: CursorPagination): Promise<ExtendedPostDTO[]>{
+        const comments = await this.db.post.findMany({
+            where: {
+                commentsInfo: {
+                    some: {
+                        postId: postId, 
+                    },
+                },
+                OR: [
+                    {
+                        author: {
+                            followers: {
+                                some: {
+                                    followerId: userId,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        authorId: userId,
+                    },
+                    {
+                        author: {
+                          isPrivate: false,
+                        },
+                    },
+                ],
+            },
+            cursor: options.after ? { id: options.after } : (options.before) ? { id: options.before } : undefined,
+            skip: options.after ?? options.before ? 1 : undefined,
+            take: options.limit ? (options.before ? -options.limit : options.limit) : undefined,
+            orderBy: [
+                {
+                    reactions: {
+                        _count: 'desc',
+                    },
+                },
+            ],
+            include: {
+                reactions: true,
+                commentsInfo: true,
+                author: true,
+            },
+        })
+        const extendedPostDTOs: ExtendedPostDTO[] = comments.map(comment => { 
+            const qtyLikes: number = comments.reduce((totalLikes, comment) => {
+                const likesInComment = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
+                return totalLikes + likesInComment;
+            }, 0);
+            const qtyRetweets: number = comments.reduce((totalRetweets, comment) => {
+                const retweetsInComment = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
+                return totalRetweets + retweetsInComment;
+            }, 0);
+            const qtyComments: number = comments.reduce((totalComments, comment) => {
+                const commentsInComment = comment.commentsInfo.filter(commentInfo => commentInfo.postId === comment.id).length;
+                return totalComments + commentsInComment;
+            }, 0);
+            
+            return new ExtendedPostDTO({
+                id: comment.id,
+                authorId: comment.authorId,
+                content: comment.content,
+                images: comment.images,
+                createdAt: comment.createdAt,
+                author: comment.author,
+                qtyLikes,
+                qtyRetweets,
+                qtyComments,
+        })});
+        return extendedPostDTOs
     }
 } 

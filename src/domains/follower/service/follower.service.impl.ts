@@ -3,7 +3,7 @@ import { FollowerService } from "./follower.service"
 import { Request } from "express"
 import { FollowerRepository } from "../repository"
 import { FollowDTO } from "../dto"
-import { UserDTO } from "@domains/user/dto"
+import { UserDTO, UserViewDTO } from "@domains/user/dto"
 import { UserRepositoryImpl } from "@domains/user/repository"
 
 export class FollowerServiceImpl implements FollowerService {

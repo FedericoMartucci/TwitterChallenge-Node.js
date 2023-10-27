@@ -2,12 +2,13 @@ import { NotFoundException, db } from "@utils"
 import { CommentService } from "../service"
 import { CommentRepository } from "../repository"
 import { CommentDTO, CommentInputDTO } from "../dto"
-import { UserDTO } from "@domains/user/dto"
+import { UserDTO, UserViewDTO } from "@domains/user/dto"
 import { UserRepositoryImpl } from "@domains/user/repository"
 import { PostRepositoryImpl } from "@domains/post/repository"
-import { PostDTO } from "@domains/post/dto"
+import { ExtendedPostDTO, PostDTO } from "@domains/post/dto"
 import { ReactionRepositoryImpl } from "@domains/reaction/repository"
 import { ReactionInputDTO, ReactionType } from "@domains/reaction/dto"
+import { CursorPagination } from "@types"
 
 const postRepository: PostRepositoryImpl = new PostRepositoryImpl(db)
 const userRepository: UserRepositoryImpl = new UserRepositoryImpl(db)
@@ -23,7 +24,14 @@ export class CommentServiceImpl implements CommentService {
         const user:UserDTO|null = await userRepository.getById(userId)
         if(!user) throw new NotFoundException('user')
 
-        return await this.repository.createComment(user, post as PostDTO, commentary)
+        return await this.repository.createComment(userId, postId, commentary)
+    }
+
+    async getCommentsByPostId (userId: string, postId: string, options: CursorPagination): Promise<ExtendedPostDTO[]>{
+        const comments = await this.repository.getByPostId(userId, postId, options)
+        if(!comments.length) throw new NotFoundException('comments')
+
+        return comments
     }
 
     async getCommentsByAuthorId (userId: string, authorId: string): Promise<CommentDTO[]>{
@@ -32,4 +40,5 @@ export class CommentServiceImpl implements CommentService {
         return comments
     }
   }
+
   

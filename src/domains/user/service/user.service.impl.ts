@@ -1,9 +1,9 @@
 import { NotFoundException } from '@utils/errors'
 import { CursorPagination, OffsetPagination } from 'types'
-import { UserDTO, UserViewDTO } from '../dto'
+import { ProfilePictureDTO, UserDTO, UserViewDTO } from '../dto'
 import { UserRepository } from '../repository'
 import { UserService } from './user.service'
-import { s3 } from '@utils/aws'
+import { getPreSignedURL, setPreSignedURL } from '@utils/aws'
 
 require('dotenv').config();
 
@@ -35,13 +35,10 @@ export class UserServiceImpl implements UserService {
     await this.repository.updatePrivacy(userId, isPrivate)
   }
 
-  async setUserProfilePicture (userId: any): Promise<string>{
-    const uploadUrl = s3.getSignedUrl('putObject', {
-      Bucket: 'siriuschallenge',
-      Key: `userId/profile.jpg`,
-      Expires: 60 * 5,
-    });
-    
-    return uploadUrl
+  async setUserProfilePicture (userId: any, data: ProfilePictureDTO): Promise<string>{
+    const preSignedURL: string = setPreSignedURL(userId, data.name, data.extension)
+    const downloadURL: string = getPreSignedURL(userId, data.name, data.extension)
+    await this.repository.updateProfilePicture(userId, downloadURL)
+    return preSignedURL
   }
 }

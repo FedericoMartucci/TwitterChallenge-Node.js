@@ -121,4 +121,14 @@ export class UserRepositoryImpl implements UserRepository {
       },
     })
   }
+  async updateProfilePicture (userId: string, downloadURL: string): Promise<void>{
+    await this.db.user.update({
+      where:{
+        id: userId,
+      },
+      data: {
+        profilePicture: downloadURL
+      },
+    })
+  }
 }

@@ -208,11 +208,11 @@ import HttpStatus from 'http-status'
 // express-async-errors is a module that handles async errors in express, don't forget import it in your new controllers
 import 'express-async-errors'
 
-import { db } from '@utils'
+import { BodyValidation, db } from '@utils'
 
 import { UserRepositoryImpl } from '../repository'
 import { UserService, UserServiceImpl } from '../service'
-import { s3 } from '@utils/aws'
+import { ProfilePictureDTO } from '../dto'
 
 export const userRouter = Router()
 
@@ -247,9 +247,10 @@ userRouter.post('/update/privacy', async (req: Request, res: Response) => {
 })
 
 
-userRouter.put('/update/profile_picture', async (req: Request, res: Response) => {
+userRouter.post('/update/profile_picture', BodyValidation(ProfilePictureDTO), async (req: Request, res: Response) => {
   const { userId } = res.locals.context
-  const users = await service.setUserProfilePicture(userId)
+  const profilePictureData: ProfilePictureDTO = req.body
+  const users = await service.setUserProfilePicture(userId, profilePictureData)
 
   return res.status(HttpStatus.OK).json(users)
 })

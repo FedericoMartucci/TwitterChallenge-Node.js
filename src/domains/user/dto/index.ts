@@ -1,3 +1,5 @@
+import { IsAlphanumeric, IsNotEmpty, IsString, MaxLength } from "class-validator"
+
 export class UserDTO {
   constructor (user: UserDTO) {
     this.id = user.id
@@ -41,4 +43,21 @@ export class UserViewDTO {
   username: string
   followsYou?: boolean
   profilePicture: string | null
+}
+
+export class ProfilePictureDTO {
+  @IsString()
+  @MaxLength(30)
+  @IsNotEmpty()
+  name!: string
+
+  @IsString()
+  @MaxLength(4)
+  @IsNotEmpty()
+  extension!: string
+
+  constructor (name: string, extension: string) {
+    this.name = name
+    this.extension = extension
+  }
 }

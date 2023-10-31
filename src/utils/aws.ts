@@ -5,13 +5,23 @@ import AWS from 'aws-sdk'
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_PUBLIC_KEY,
     secretAccessKey: process.env.AWS_SECRET_KEY,
-    region: "sa-east-1",
+    region: "us-east-1",
 });
+function setPreSignedURL(userId: string, fileName: string, extension: string): string{
+    const uploadURL = s3.getSignedUrl('putObject', {
+        Bucket: 'siriuschallenge',
+        Key: `${userId}-${fileName}${extension}`,
+        Expires: 60 * 5,
+    });
+    return uploadURL.split('?')[0]
+}
 
 // Generate a pre-signed URL for retrieving a profile picture (GET request)
-const downloadUrl = s3.getSignedUrl('getObject', {
-    Bucket: 'siriuschallenge',
-    Key: `user_id/profile.jpg`,
-    Expires: 60 * 60 * 24, // URL expires in 24 hours
-});
-export { s3 }
+function getPreSignedURL(userId: string, fileName: string, extension: string): string{
+    const profilePictureURL = s3.getSignedUrl('getObject', {
+        Bucket: 'siriuschallenge',
+        Key: `${userId}-${fileName}${extension}`,
+    });
+    return profilePictureURL
+}
+export { setPreSignedURL, getPreSignedURL }

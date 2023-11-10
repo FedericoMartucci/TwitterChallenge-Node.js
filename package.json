@@ -72,9 +72,5 @@
     "hooks": {
       "pre-commit": "eslint --fix && pretty-quick --staged"
     }
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
   }
 }

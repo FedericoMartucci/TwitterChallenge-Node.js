@@ -12,7 +12,6 @@ export class UserRepositoryTestImpl implements UserRepository {
   
     async getUserViewById (userId: any): Promise<UserViewDTO | null> {
       const user = {id: userId, name: 'name', username: "username", followsYou: false, profilePicture: null};
-      console.log(user.id)
       if(userId === 'nonexisting-user-id')
         return null
   
@@ -27,24 +26,26 @@ export class UserRepositoryTestImpl implements UserRepository {
   
     async getById (userId: any): Promise<UserDTO | null> {
         const user = {id: userId, name: 'name', createdAt: new Date(), isPrivate: false, profilePicture: null};
-        
-        return user.id !== 'nonexisting-user-id'? new UserDTO({
+        if(user.id === 'nonexisting-user-id')
+          return null
+    
+        return new UserDTO({
             id: user.id,
             name: user.name,
             createdAt: user.createdAt,
             isPrivate: user.isPrivate,
             profilePicture: user.profilePicture
-          }) : null
+          })
     }
   
     async delete (userId: any): Promise<void> {}
   
     async getRecommendedUsersPaginated (options: OffsetPagination): Promise<UserViewDTO[]> {
         const users = [
-            {id: "user1-uuid32", name: "user1", username: "username1", followsYou: false, profilePicture: null},
-            {id: "user2-uuid32", name: "user2", username: "username2", followsYou: true, profilePicture: null},
-            {id: "user3-uuid32", name: "user3", username: "username3", followsYou: false, profilePicture: null},
-            {id: "user4-uuid32", name: "user4", username: "username4", followsYou: true, profilePicture: null},
+            {id: "user1-uuid32", name: "user1", username: "user1 - matchingUsername", followsYou: false, profilePicture: null},
+            {id: "user2-uuid32", name: "user2", username: "user2 - matchingUsername", followsYou: true, profilePicture: null},
+            {id: "user3-uuid32", name: "user3", username: "user3", followsYou: false, profilePicture: null},
+            {id: "user4-uuid32", name: "user4", username: "user4", followsYou: true, profilePicture: null},
         ];
 
         return users.map(users => new UserViewDTO(users));
@@ -67,7 +68,7 @@ export class UserRepositoryTestImpl implements UserRepository {
           })
     }
   
-    async getUsersByUsername (userId: string, username: string, options: CursorPagination): Promise<UserViewDTO[]|null>{
+    async getUsersByUsername (userId: string, username: string, options: CursorPagination): Promise<UserViewDTO[]>{
         const users = [
                 {id: "user1-uuid32", name: "user1", username: "user1 - matchingUsername", followsYou: false, profilePicture: null},
                 {id: "user2-uuid32", name: "user2", username: "user2 - matchingUsername", followsYou: true, profilePicture: null},
@@ -75,8 +76,8 @@ export class UserRepositoryTestImpl implements UserRepository {
                 {id: "user4-uuid32", name: "user4", username: "user4", followsYou: true, profilePicture: null},
             ]
         const matchingUsers = users.filter(user => user.username.includes(username));
-      
-      return matchingUsers.length !== 0 ? matchingUsers.map(users => new UserViewDTO(users)) : null
+  
+      return matchingUsers.map(users => new UserViewDTO(users))
     }
   
     async isExistingId (userId: any): Promise<boolean> {

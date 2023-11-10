@@ -4,7 +4,7 @@ export class CommentInputDTO{
     @IsString()
     @IsNotEmpty()
     @MaxLength(240)
-    comment: string;
+    comment!: string;
 
     constructor(comment: string){
         this.comment = comment;

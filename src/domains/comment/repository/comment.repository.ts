@@ -1,6 +1,5 @@
-import { ExtendedPostDTO, PostDTO } from '@domains/post/dto'
+import { ExtendedPostDTO } from '@domains/post/dto'
 import { CommentDTO, CommentInputDTO } from '../dto'
-import { UserDTO } from '@domains/user/dto'
 import { CursorPagination } from '@types'
 
 export interface CommentRepository {

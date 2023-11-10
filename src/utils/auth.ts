@@ -1,8 +1,8 @@
 import jwt, { JwtPayload, verify } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
-import { Constants } from '@utils'
-import { UnauthorizedException } from '@utils/errors'
+import { Constants } from '../utils/constants'
+import { UnauthorizedException } from '../utils/errors'
 
 export const generateAccessToken = (payload: Record<string, string | boolean | number>): string => {
   // Do not use this in production, the token will last 24 hours
@@ -32,15 +32,3 @@ export const encryptPassword = async (password: string): Promise<string> => {
 export const checkPassword = async (password: string, hash: string): Promise<boolean> => {
   return await bcrypt.compare(password, hash)
 }
-
-
-export const getUserIdFromToken = (request: Request): string | undefined => {
-  const jwtByUser = request.headers.authorization || '';
-  const jwt = jwtByUser.split(' ').pop();
-  const payload = verifyToken(jwt) as {userId: string | undefined};
-  return payload.userId;
-};
-
-const verifyToken = (token: string | undefined): string | JwtPayload => {
-  return verify(token as string, Constants.TOKEN_SECRET) as JwtPayload;
-};

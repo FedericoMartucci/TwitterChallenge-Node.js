@@ -1,9 +1,9 @@
-import { NotFoundException } from '@utils/errors'
+import { NotFoundException } from '../../../utils/errors'
 import { CursorPagination, OffsetPagination } from 'types'
-import { ProfilePictureDTO, UserDTO, UserViewDTO } from '../dto'
+import { ProfilePictureDTO, UserViewDTO } from '../dto'
 import { UserRepository } from '../repository'
 import { UserService } from './user.service'
-import { getPreSignedURL, setPreSignedURL } from '@utils/aws'
+import { getPreSignedURL, setPreSignedURL } from '../../../utils/aws'
 
 require('dotenv').config();
 

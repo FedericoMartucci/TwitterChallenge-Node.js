@@ -119,9 +119,6 @@ import { db, BodyValidation } from '@utils'
 import { FollowerService, FollowerServiceImpl } from '../service'
 import { FollowerRepositoryImpl } from '../repository'
 
-// import { AuthService, AuthServiceImpl } from '../service'
-// import { LoginInputDTO, SignupInputDTO } from '../dto'
-
 export const followerRouter = Router()
 
 // Use dependency injection
@@ -129,16 +126,18 @@ const service: FollowerService = new FollowerServiceImpl(new FollowerRepositoryI
 
 followerRouter.post('/follow/:userId', async (req: Request, res: Response) => {
     const userId: string  = req.params.userId
+    const ownId: string = res.locals.context
 
-    const post = await service.follow(userId, req)
-  
+    const post = await service.follow(userId, ownId)
+    
     return res.status(HttpStatus.OK).json(post)
 })
 
 followerRouter.post('/unfollow/:userId', async (req: Request, res: Response) => {
     const userId: string = req.params.userId
-  
-    const post = await service.unfollow(userId, req)
+    const ownId: string = res.locals.context
+
+    const post = await service.unfollow(userId, ownId)
   
     return res.status(HttpStatus.OK).json(post)
 })

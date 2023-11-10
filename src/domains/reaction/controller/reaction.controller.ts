@@ -16,6 +16,9 @@
  *     NotFoundException:
  *       description: Not found. Couldn't find any user.
  *       example: Not found. Couldn't find any user.
+ *     UnauthorizedException:
+ *       description: Unauthorized. You are not allowed to perform this action.
+ *       example: Unauthorized. You are not allowed to perform this action.
  *   schemas:
  *     ReactionInputDTO:
  *       type: object
@@ -67,6 +70,14 @@
  *   post:
  *     summary: React to a post.
  *     tags: [Reaction]
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The Post ID
+ *         example: ce506c7a-9658-4093-920d-6bd5c5091897
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -85,6 +96,12 @@
  *       400:
  *         description: Invalid request body.
  *         example: Validation error.
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
  *       404:
  *         description: Cannot found the post.
  *         content:
@@ -103,6 +120,14 @@
  *   delete:
  *     summary: Delete a reaction.
  *     tags: [Reaction]
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The Post ID
+ *         example: ce506c7a-9658-4093-920d-6bd5c5091897
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -121,6 +146,12 @@
  *       400:
  *         description: Invalid request body.
  *         example: Validation error.
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
  *       404:
  *         description: Cannot found the reaction.
  *         content:
@@ -130,7 +161,42 @@
  *       500:
  *         description: Some server error.
  *         example: Server error.
- *
+ * /api/reaction/by_user/{userId}:
+ *   get:
+ *     summary: Get all reactions that a user who I follow has done.
+ *     tags: [Reaction]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *         example: ce506c7a-9658-4093-920d-6bd5c5091897
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Returns a list with the reactions.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ReactionDTO'
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       404:
+ *         description: Cannot found the user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
  */
 import { Request, Response, Router } from 'express'
 import HttpStatus from 'http-status'

@@ -28,7 +28,7 @@ export class FollowerRepositoryImpl implements FollowerRepository {
     return new FollowDTO(follow.id, follow.followerId, follow.followedId, follow.createdAt)
   }
 
-  async unfollowById (followId: string|undefined): Promise<void>{     
+  async unfollowById (followId: string): Promise<void>{     
     const unfollow = await this.db.follow.delete({
       where: {
         id: followId,

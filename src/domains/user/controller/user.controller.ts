@@ -38,6 +38,7 @@
  *         name: JohnDoe
  *         createdAt: 2023-10-12T15:18:32.546Z
  *         isPrivate: true
+ * 
  *     ExtendedUserDTO:
  *       allOf:
  *         - $ref: '#/components/schemas/UserDTO'
@@ -61,8 +62,21 @@
  *             email: example@user.com
  *             user: username
  *             password: Password123.
- *
- *     UserViewDTO:
+ *     
+ *     ProfilePictureDTO:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: The file's name.
+ *         extension:
+ *           type: string
+ *           description: The file's extension.
+ *       example:
+ *         name: myFile
+ *         extension: .txt
+ * 
+ *      UserViewDTO:
  *       type: object
  *       properties:
  *         id:
@@ -187,6 +201,109 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserDTO'
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       404:
+ *         description: Not found that user ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
+ * /api/user/by_username/{username}:
+ *   get:
+ *     summary: Returns a list with the information of users that their usernames are included in {username}.
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *         example: ce506c7a-9658-4093-920d-6bd5c5091897
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Returns a list with the users' info.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserDTO'
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       404:
+ *         description: Not found that user ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
+ * /api/user/update/privacy:
+ *   post:
+ *     summary: Updates the privacy of the logged user.
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Returns the user's info with the changed privacy.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserDTO'
+ *       400:
+ *         description: Invalid request body.
+ *       401:
+ *         description: You must be logged to see the information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/UnauthorizedException'
+ *       404:
+ *         description: Not found that user ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/responses/NotFoundException'
+ *       500:
+ *         description: Some server error.
+ *         example: Server error.
+ * /api/user/update/profile_picture:
+ *   post:
+ *     summary: Updates the profile picture of the logged user.
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProfilePictureDTO'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Returns a list with the users' info.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserDTO'
+ *       400:
+ *         description: Invalid request body.
  *       401:
  *         description: You must be logged to see the information.
  *         content:

@@ -5,6 +5,7 @@ import { CursorPagination } from '@types'
 import { PostRepository } from '.'
 import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from '../dto'
 import { ReactionType } from '@domains/reaction/dto'
+import { UserDTO } from '@domains/user/dto'
 
 export class PostRepositoryImpl implements PostRepository {
   constructor (private readonly db: PrismaClient) {}
@@ -56,7 +57,15 @@ export class PostRepositoryImpl implements PostRepository {
         }
       ],
       include: {
-        author: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+            isPrivate: true,
+            profilePicture: true,
+          },
+        },
         reactions: true,
         commentsInfo: true,
       }
@@ -151,7 +160,15 @@ export class PostRepositoryImpl implements PostRepository {
         }
       },
       include: {
-        author: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+            isPrivate: true,
+            profilePicture: true,
+          },
+        },
         reactions: true,
         commentsInfo: true,
       }

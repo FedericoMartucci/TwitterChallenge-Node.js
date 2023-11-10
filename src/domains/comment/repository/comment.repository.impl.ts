@@ -1,11 +1,8 @@
-import { ExtendedPostDTO, PostDTO } from "@domains/post/dto";
+import { ExtendedPostDTO } from "@domains/post/dto";
 import { CommentRepository } from "./comment.repository";
-import { UserDTO } from "@domains/user/dto";
 import { CommentDTO, CommentInputDTO } from "../dto";
 import { PrismaClient } from "@prisma/client";
-import { ReactionType } from "@domains/reaction/dto";
 import { CursorPagination } from "@types";
-import { ReactionServiceImpl } from "@domains/reaction/service";
 
 export class CommentRepositoryImpl implements CommentRepository{
     constructor (private readonly db: PrismaClient) {}
@@ -120,20 +117,12 @@ export class CommentRepositoryImpl implements CommentRepository{
                 author: true,
             },
         })
-        const extendedPostDTOs: ExtendedPostDTO[] = comments.map(comment => { 
-            const qtyLikes: number = comments.reduce((totalLikes, comment) => {
-                const likesInComment = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
-                return totalLikes + likesInComment;
-            }, 0);
-            const qtyRetweets: number = comments.reduce((totalRetweets, comment) => {
-                const retweetsInComment = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
-                return totalRetweets + retweetsInComment;
-            }, 0);
-            const qtyComments: number = comments.reduce((totalComments, comment) => {
-                const commentsInComment = comment.commentsInfo.filter(commentInfo => commentInfo.postId === comment.id).length;
-                return totalComments + commentsInComment;
-            }, 0);
-            
+        
+        const extendedPostDTOs: ExtendedPostDTO[] = comments.map(comment => {
+            const qtyLikes = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
+            const qtyRetweets = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
+            const qtyComments = comment.commentsInfo.filter(commentInfo => commentInfo.postId === comment.id).length;
+        
             return new ExtendedPostDTO({
                 id: comment.id,
                 authorId: comment.authorId,
@@ -144,7 +133,9 @@ export class CommentRepositoryImpl implements CommentRepository{
                 qtyLikes,
                 qtyRetweets,
                 qtyComments,
-        })});
+            });
+        });
+        
         return extendedPostDTOs
     }
 } 

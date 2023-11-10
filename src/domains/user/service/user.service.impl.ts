@@ -1,9 +1,9 @@
-import { NotFoundException } from '@utils/errors'
+import { NotFoundException } from '../../../utils/errors'
 import { CursorPagination, OffsetPagination } from 'types'
-import { ProfilePictureDTO, UserDTO, UserViewDTO } from '../dto'
+import { ProfilePictureDTO, UserViewDTO } from '../dto'
 import { UserRepository } from '../repository'
 import { UserService } from './user.service'
-import { getPreSignedURL, setPreSignedURL } from '@utils/aws'
+import { getPreSignedURL, setPreSignedURL } from '../../../utils/aws'
 
 require('dotenv').config();
 
@@ -23,7 +23,7 @@ export class UserServiceImpl implements UserService {
 
   async getUsersByUsername (userId: string, username: string, options: CursorPagination): Promise<UserViewDTO[]>{
     const user = await this.repository.getUsersByUsername(userId, username, options)
-    if (!user) throw new NotFoundException('user')
+    if (!user || !user.length) throw new NotFoundException('user')
     return user
   }
 

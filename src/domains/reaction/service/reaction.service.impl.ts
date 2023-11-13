@@ -1,11 +1,11 @@
-import { ConflictException, NotFoundException, db } from "@utils"
+import { ConflictException, NotFoundException, db } from "../../../utils"
 import { ReactionService } from "../service"
 import { ReactionRepository } from "../repository"
 import { ReactionDTO, ReactionInputDTO } from "../dto"
-import { UserDTO } from "@domains/user/dto"
-import { UserRepository, UserRepositoryImpl } from "@domains/user/repository"
-import { PostRepository, PostRepositoryImpl } from "@domains/post/repository"
-import { PostDTO } from "@domains/post/dto"
+import { UserDTO } from "../../../domains/user/dto"
+import { UserRepository, UserRepositoryImpl } from "../../../domains/user/repository"
+import { PostRepository, PostRepositoryImpl } from "../../../domains/post/repository"
+import { PostDTO } from "../../../domains/post/dto"
 
 const postRepository: PostRepository = new PostRepositoryImpl(db)
 const userRepository: UserRepository = new UserRepositoryImpl(db)

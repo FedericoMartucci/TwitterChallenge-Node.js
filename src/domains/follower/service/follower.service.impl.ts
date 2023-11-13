@@ -1,10 +1,10 @@
-import { ForbiddenException, NotFoundException, db } from "@utils"
+import { ForbiddenException, NotFoundException, db } from "../../../utils"
 import { FollowerService } from "./follower.service"
 import { Request } from "express"
 import { FollowerRepository } from "../repository"
 import { FollowDTO } from "../dto"
-import { UserDTO, UserViewDTO } from "@domains/user/dto"
-import { UserRepository, UserRepositoryImpl } from "@domains/user/repository"
+import { UserDTO, UserViewDTO } from "../../../domains/user/dto"
+import { UserRepository, UserRepositoryImpl } from "../../../domains/user/repository"
 
 const userRepository: UserRepository = new UserRepositoryImpl(db)
 

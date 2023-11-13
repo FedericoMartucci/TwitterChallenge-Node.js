@@ -23,7 +23,7 @@ export class UserServiceImpl implements UserService {
 
   async getUsersByUsername (userId: string, username: string, options: CursorPagination): Promise<UserViewDTO[]>{
     const user = await this.repository.getUsersByUsername(userId, username, options)
-    if (!user) throw new NotFoundException('user')
+    if (!user || !user.length) throw new NotFoundException('user')
     return user
   }
 

@@ -88,7 +88,7 @@ export class UserRepositoryImpl implements UserRepository {
     return user ? new ExtendedUserDTO(user) : null
   }
 
-  async getUsersByUsername (userId: string, username: string, options: CursorPagination): Promise<UserViewDTO[]>{
+  async getUsersByUsername (userId: string, username: string, options: CursorPagination): Promise<UserViewDTO[]|null>{
     const users = await this.db.user.findMany({
       where: {
         username: {
@@ -99,8 +99,7 @@ export class UserRepositoryImpl implements UserRepository {
       skip: options.after ?? options.before ? 1 : undefined,
       take: options.limit ? (options.before ? -options.limit : options.limit) : undefined,
     })
-
-    return users.map(user => new UserViewDTO(user))
+    return users !== null? users.map(user => new UserViewDTO(user)) : null
   }
 
   async isExistingId (userId: any): Promise<boolean> {

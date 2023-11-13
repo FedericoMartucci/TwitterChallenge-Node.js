@@ -1,12 +1,12 @@
-import { NotFoundException, db } from "@utils"
+import { NotFoundException, db } from "../../../utils"
 import { CommentService } from "../service"
 import { CommentRepository } from "../repository"
 import { CommentDTO, CommentInputDTO } from "../dto"
-import { UserDTO } from "@domains/user/dto"
-import { UserRepositoryImpl } from "@domains/user/repository"
-import { PostRepositoryImpl } from "@domains/post/repository"
-import { ExtendedPostDTO, PostDTO } from "@domains/post/dto"
-import { CursorPagination } from "@types"
+import { UserDTO } from "../../../domains/user/dto"
+import { UserRepositoryImpl } from "../../../domains/user/repository"
+import { PostRepositoryImpl } from "../../../domains/post/repository"
+import { ExtendedPostDTO, PostDTO } from "../../../domains/post/dto"
+import { CursorPagination } from "../../../types"
 
 const postRepository: PostRepositoryImpl = new PostRepositoryImpl(db)
 const userRepository: UserRepositoryImpl = new UserRepositoryImpl(db)

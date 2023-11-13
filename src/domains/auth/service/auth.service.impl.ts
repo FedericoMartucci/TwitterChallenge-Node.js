@@ -1,4 +1,4 @@
-import { UserRepository } from '@domains/user/repository'
+import { UserRepository } from '../../../domains/user/repository'
 import {
   checkPassword,
   ConflictException,
@@ -6,7 +6,7 @@ import {
   generateAccessToken,
   NotFoundException,
   UnauthorizedException
-} from '@utils'
+} from '../../../utils'
 
 import { LoginInputDTO, SignupInputDTO, TokenDTO } from '../dto'
 import { AuthService } from './auth.service'
@@ -21,21 +21,22 @@ export class AuthServiceImpl implements AuthService {
     const encryptedPassword = await encryptPassword(data.password)
 
     const user = await this.repository.create({ ...data, password: encryptedPassword })
-    const token = generateAccessToken({ userId: user.id })
-
-    return { token }
+    const token: TokenDTO = new TokenDTO()
+    token.token = generateAccessToken({ userId: user.id })
+    return token
   }
 
   async login (data: LoginInputDTO): Promise<TokenDTO> {
     const user = await this.repository.getByEmailOrUsername(data.email, data.username)
+    
     if (!user) throw new NotFoundException('user')
 
     const isCorrectPassword = await checkPassword(data.password, user.password)
 
     if (!isCorrectPassword) throw new UnauthorizedException('INCORRECT_PASSWORD')
 
-    const token = generateAccessToken({ userId: user.id })
-
-    return { token }
+    const token: TokenDTO = new TokenDTO()
+    token.token = generateAccessToken({ userId: user.id })
+    return token
   }
 }

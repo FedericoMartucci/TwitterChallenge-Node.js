@@ -16,10 +16,20 @@ describe('getUser return the user\'s info or null if it does not find any matchi
         expect(user).toBeInstanceOf(UserViewDTO);
     });
     test('It should throw NotFoundException.', async () => {
+<<<<<<< HEAD
         const userId: string = 'nonexisting-user-id'
 
         try {
             await userService.getUser(userId);
+=======
+        const requestParams = {
+            userId: 'nonexisting-user-id'
+        };
+
+        try {
+            await userService.getUser(requestParams);
+
+>>>>>>> 1868bb6fc14db0eafe2793685febe65d40cd53b0
             fail('Expected NotFoundException but no exception was thrown');
         } catch (error) {
             expect(error).toBeInstanceOf(NotFoundException);

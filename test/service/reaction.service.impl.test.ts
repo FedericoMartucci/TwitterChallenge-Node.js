@@ -1,4 +1,5 @@
 import { CreatePostInputDTO, PostDTO } from "../../src/domains/post/dto";
+<<<<<<< HEAD
 import { ReactionDTO, ReactionInputDTO, ReactionType } from "../../src/domains/reaction/dto";
 import { ReactionService, ReactionServiceImpl } from "../../src/domains/reaction/service"
 import { ConflictException, ForbiddenException, NotFoundException } from "../../src/utils";
@@ -90,3 +91,10 @@ describe('getReactionsByAuthorId returns all reactions that were done by a user'
         }
     })
 })
+=======
+import { ReactionService, ReactionServiceImpl } from "../../src/domains/reaction/service"
+import { ForbiddenException, NotFoundException } from "../../src/utils";
+import { ReactionRepositoryTestImpl } from "../mocks/reaction.repository.test.impl";
+
+const reactionService: ReactionService = new ReactionServiceImpl(new ReactionRepositoryTestImpl())
+>>>>>>> 1868bb6fc14db0eafe2793685febe65d40cd53b0

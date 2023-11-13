@@ -9,7 +9,11 @@ export class ReactionRepositoryTestImpl implements ReactionRepository{
     }
     async delete (reactionId: string): Promise<void>{}
     async getById (userId: string, postId: string, reactionType: ReactionInputDTO): Promise<ReactionDTO | null>{
+<<<<<<< HEAD
         return postId === 'already-reacted-postId'? new ReactionDTO("reactionId", userId, postId, reactionType.reactionType, new Date()) : null
+=======
+        return userId === 'non-existing-reaction'? null : new ReactionDTO("reactionId", userId, postId, reactionType.reactionType, new Date())
+>>>>>>> 1868bb6fc14db0eafe2793685febe65d40cd53b0
     }
     async getByAuthorId (userId: string, authorId: string): Promise<ReactionDTO[]>{
         const reactions: ReactionDTO[] = [

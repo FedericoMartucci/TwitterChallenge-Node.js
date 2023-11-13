@@ -3,6 +3,7 @@ import { FollowerService, FollowerServiceImpl } from "../../src/domains/follower
 import { ForbiddenException, NotFoundException } from "../../src/utils";
 import { FollowerRepositoryTestImpl } from "../mocks/follower.repository.test.impl";
 
+<<<<<<< HEAD
 const followerService: FollowerService = new FollowerServiceImpl(new FollowerRepositoryTestImpl())
 
 describe('follow allows to follow users, handling constraints.', () => {
@@ -45,3 +46,6 @@ describe('unfollow allows to unfollow users, handling constraints.', () => {
 
 //     await this.repository.unfollowById(followId)
 // }
+=======
+const followerService: FollowerService = new FollowerServiceImpl(new FollowerRepositoryTestImpl())
+>>>>>>> 1868bb6fc14db0eafe2793685febe65d40cd53b0

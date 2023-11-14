@@ -5,14 +5,14 @@ import { UserDTO, UserViewDTO } from "@domains/user/dto";
 export class FollowerRepositoryImpl implements FollowerRepository {
   constructor (private readonly db: PrismaClient) {}
   
-  async getFollowId (follower:UserDTO, followed:UserDTO): Promise<string|undefined>{
+  async getFollowId (follower:UserDTO, followed:UserDTO): Promise<string|null>{
     const followId = await this.db.follow.findFirst({
       where:{
         follower: follower,
         followed: followed,
       }
     })
-    return followId?.id;
+    return followId? followId.id : null;
   }
   async followByUsers (follower:UserDTO, followed:UserDTO): Promise<FollowDTO>{
     const follow = await this.db.follow.create({

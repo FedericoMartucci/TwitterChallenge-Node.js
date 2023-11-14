@@ -30,7 +30,7 @@ export class UserRepositoryTestImpl implements UserRepository {
         const user = {id: userId, name: 'name', createdAt: new Date(), isPrivate: false, profilePicture: null};
         if(user.id === 'nonexisting-user-id')
           return null
-    
+
         return new UserDTO({
             id: user.id,
             name: user.name,

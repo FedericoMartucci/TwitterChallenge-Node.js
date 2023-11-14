@@ -9,20 +9,16 @@ export class ReactionRepositoryTestImpl implements ReactionRepository{
     }
     async delete (reactionId: string): Promise<void>{}
     async getById (userId: string, postId: string, reactionType: ReactionInputDTO): Promise<ReactionDTO | null>{
-<<<<<<< HEAD
-        return postId === 'already-reacted-postId'? new ReactionDTO("reactionId", userId, postId, reactionType.reactionType, new Date()) : null
-=======
-        return userId === 'non-existing-reaction'? null : new ReactionDTO("reactionId", userId, postId, reactionType.reactionType, new Date())
->>>>>>> 1868bb6fc14db0eafe2793685febe65d40cd53b0
+        return postId === 'not-reacted-post-id'? null : new ReactionDTO("reactionId", userId, postId, reactionType.reactionType, new Date())
     }
     async getByAuthorId (userId: string, authorId: string): Promise<ReactionDTO[]>{
         const reactions: ReactionDTO[] = [
-            {id: "reactionId1", userId: "userId", postId: "postId1", reactionType: ReactionType.LIKE, createdAt: new Date()},
-            {id: "reactionId2", userId: "userId", postId: "postId2", reactionType: ReactionType.RETWEET, createdAt: new Date()},
-            {id: "reactionId3", userId: "userId", postId: "postId3", reactionType: ReactionType.LIKE, createdAt: new Date()},
-            {id: "reactionId4", userId: "userId", postId: "postId4", reactionType: ReactionType.RETWEET, createdAt: new Date()}
+            {id: "reactionId1", userId: "authorId", postId: "postId1", reactionType: ReactionType.LIKE, createdAt: new Date('2023-11-13T13:37:31.056Z')},
+            {id: "reactionId2", userId: "authorId", postId: "postId2", reactionType: ReactionType.RETWEET, createdAt: new Date('2023-11-13T13:37:31.056Z')},
+            {id: "reactionId3", userId: "authorId", postId: "postId3", reactionType: ReactionType.LIKE, createdAt: new Date('2023-11-13T13:37:31.056Z')},
+            {id: "reactionId4", userId: "authorId", postId: "postId4", reactionType: ReactionType.RETWEET, createdAt: new Date('2023-11-13T13:37:31.056Z')}
         ]
-        return reactions.filter(reaction => reaction.userId === userId)
+        return reactions.filter(reaction => reaction.userId === authorId)
     }
 
 }

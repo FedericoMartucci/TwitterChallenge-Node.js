@@ -4,13 +4,13 @@ import { UserDTO } from "../../src/domains/user/dto";
 
 export class FollowerRepositoryTestImpl implements FollowerRepository{
     async followByUsers (follower: UserDTO, followed: UserDTO): Promise<FollowDTO> {
-        return new FollowDTO("followId", follower.id, followed.id, new Date())
+        return new FollowDTO("followId", follower.id, followed.id, new Date('2023-11-13T13:37:31.056Z'))
     }
 
     async unfollowById (followId: string): Promise<void> {}
 
-    async getFollowId (follower: UserDTO, followed: UserDTO): Promise<string | undefined> {
-        return follower.id === "already-following-userId"? "followId" : undefined
+    async getFollowId (follower: UserDTO, followed: UserDTO): Promise<string | null> {
+        return followed.id === "already-following-userId"? "followId" : null
     }
     
     async isFollowing (userId: string, ownId: string): Promise<boolean> {

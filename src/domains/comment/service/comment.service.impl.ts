@@ -3,23 +3,20 @@ import { CommentService } from "../service"
 import { CommentRepository } from "../repository"
 import { CommentDTO, CommentInputDTO } from "../dto"
 import { UserDTO } from "../../../domains/user/dto"
-import { UserRepositoryImpl } from "../../../domains/user/repository"
-import { PostRepositoryImpl } from "../../../domains/post/repository"
+import { UserRepository, UserRepositoryImpl } from "../../../domains/user/repository"
+import { PostRepository, PostRepositoryImpl } from "../../../domains/post/repository"
 import { ExtendedPostDTO, PostDTO } from "../../../domains/post/dto"
 import { CursorPagination } from "../../../types"
 
-const postRepository: PostRepositoryImpl = new PostRepositoryImpl(db)
-const userRepository: UserRepositoryImpl = new UserRepositoryImpl(db)
-
 export class CommentServiceImpl implements CommentService {
-    constructor (private readonly repository: CommentRepository) {
+    constructor (private readonly repository: CommentRepository, private readonly userRepository: UserRepository, private readonly postRepository: PostRepository) {
     }
     
     async comment (userId: string, postId: string, commentary: CommentInputDTO): Promise<CommentDTO> {
-        const post: PostDTO|null = await postRepository.getById(userId, postId)
+        const post: PostDTO|null = await this.postRepository.getById(userId, postId)
         if(!post) throw new NotFoundException('post')
 
-        const user:UserDTO|null = await userRepository.getById(userId)
+        const user:UserDTO|null = await this.userRepository.getById(userId)
         if(!user) throw new NotFoundException('user')
 
         return await this.repository.createComment(userId, postId, commentary)

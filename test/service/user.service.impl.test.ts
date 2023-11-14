@@ -16,20 +16,10 @@ describe('getUser return the user\'s info or null if it does not find any matchi
         expect(user).toBeInstanceOf(UserViewDTO);
     });
     test('It should throw NotFoundException.', async () => {
-<<<<<<< HEAD
         const userId: string = 'nonexisting-user-id'
 
         try {
             await userService.getUser(userId);
-=======
-        const requestParams = {
-            userId: 'nonexisting-user-id'
-        };
-
-        try {
-            await userService.getUser(requestParams);
-
->>>>>>> 1868bb6fc14db0eafe2793685febe65d40cd53b0
             fail('Expected NotFoundException but no exception was thrown');
         } catch (error) {
             expect(error).toBeInstanceOf(NotFoundException);
@@ -57,7 +47,7 @@ describe('getUsersByUsername return a list of users which their names matches wi
     test('It should return a list of UserView', async() => {
         const userId: string = "userId";
         const username: string = "matchingUsername";
-        const { limit, before, after } = {limit: 5, before: 6, after: 7}
+        const { limit } = {limit: 5}
         const users = await userService.getUsersByUsername (userId, username, { limit: Number(limit) });
 
         expect(users).toEqual(expect.arrayContaining<UserViewDTO>([
@@ -68,7 +58,7 @@ describe('getUsersByUsername return a list of users which their names matches wi
     test('It should throw NotFoundException', async() => {
         const userId: string = "userId";
         const username: string = "notMatchingUsername";
-        const { limit, before, after } = {limit: 5, before: 6, after: 7}
+        const { limit } = {limit: 5}
         try {
             await userService.getUsersByUsername (userId, username, { limit: Number(limit) });
             fail('Expected NotFoundException but no exception was thrown');

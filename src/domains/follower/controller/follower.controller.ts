@@ -118,11 +118,12 @@ import 'express-async-errors'
 import { db, BodyValidation } from '@utils'
 import { FollowerService, FollowerServiceImpl } from '../service'
 import { FollowerRepositoryImpl } from '../repository'
+import { UserRepositoryImpl } from '@domains/user/repository'
 
 export const followerRouter = Router()
 
 // Use dependency injection
-const service: FollowerService = new FollowerServiceImpl(new FollowerRepositoryImpl(db))
+const service: FollowerService = new FollowerServiceImpl(new FollowerRepositoryImpl(db), new UserRepositoryImpl(db))
 
 followerRouter.post('/follow/:userId', async (req: Request, res: Response) => {
     const userId: string  = req.params.userId

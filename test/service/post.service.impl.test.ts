@@ -20,13 +20,17 @@ describe('deletePost throw an error if something wrong occurred or returns void'
     test('It should return void as the post was deleted.', async () => {
         const userId: string = "userId";
         const postId: string = "postId";
+
+        const deletePostSpy = jest.spyOn(PostRepositoryTestImpl.prototype, 'delete')
+        const post: void = await postService.deletePost(userId, postId)
         
-        const post = await postService.deletePost(userId, postId)
-        expect(post).toBeDefined()
+        expect(deletePostSpy).toHaveBeenCalled()
+        deletePostSpy.mockRestore()
+        
     })
     test('It should throw NotFoundException as the post does not exist.', async () => {
         const userId: string = "userId";
-        const postId: string = "non-existing-postId";
+        const postId: string = "non-existing-post-id";
         try{
             const post = await postService.deletePost(userId, postId)
             fail('Expected NotFoundException but no exception was thrown');
@@ -56,7 +60,7 @@ describe('getPost returns the info of a specific post', () => {
     })
     test('It should throw NotFoundException as the post does not exist.', async () => {
         const userId: string = "userId";
-        const postId: string = "non-existing-postId";
+        const postId: string = "non-existing-post-id";
         try{
             const post = await postService.getPost(userId, postId)
             fail('Expected NotFoundException but no exception was thrown');

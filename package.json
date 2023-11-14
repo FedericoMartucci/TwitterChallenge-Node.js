@@ -7,7 +7,7 @@
     "build": "tsc && tsc-alias",
     "prod": "yarn db:migrate && node dist/server.js",
     "dev": "yarn db:migrate && yarn db:generate && nodemon -L",
-    "test": "jest",
+    "test": "jest --verbose",
     "lint": "eslint --fix && pretty-quick && prisma format",
     "db:migrate": "prisma migrate deploy",
     "db:make-migrations": "prisma migrate dev",
@@ -73,12 +73,9 @@
     "hooks": {
       "pre-commit": "eslint --fix && pretty-quick --staged"
     }
-<<<<<<< HEAD
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
-=======
->>>>>>> 1868bb6fc14db0eafe2793685febe65d40cd53b0
   }
 }

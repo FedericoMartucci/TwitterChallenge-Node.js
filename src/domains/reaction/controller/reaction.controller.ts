@@ -209,11 +209,13 @@ import { db, BodyValidation } from '@utils'
 import { ReactionRepositoryImpl } from '../repository'
 import { ReactionService, ReactionServiceImpl } from '../service'
 import { ReactionInputDTO } from '../dto'
+import { UserRepositoryImpl } from '@domains/user/repository'
+import { PostRepositoryImpl } from '@domains/post/repository'
 
 export const reactionRouter = Router()
 
 // Use dependency injection
- const service: ReactionService = new ReactionServiceImpl(new ReactionRepositoryImpl(db))
+ const service: ReactionService = new ReactionServiceImpl(new ReactionRepositoryImpl(db), new UserRepositoryImpl(db), new PostRepositoryImpl(db))
 
 reactionRouter.post('/:postId', BodyValidation(ReactionInputDTO), async (req: Request, res: Response) => {
   const { userId } = res.locals.context

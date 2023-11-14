@@ -1,6 +1,6 @@
 import { CommentRepository } from "../../src/domains/comment/repository"
 import { CursorPagination } from "../../src/types";
-import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from "../../src/domains/post/dto";
+import { ExtendedPostDTO } from "../../src/domains/post/dto";
 import { CommentInputDTO, CommentDTO } from "../../src/domains/comment/dto";
 import { UserDTO } from "../../src/domains/user/dto";
 

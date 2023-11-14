@@ -2,7 +2,7 @@ import express from 'express'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import { createServer } from "http";
+import { createServer } from "node:http";
 import { Server } from "socket.io";
 
 import { Constants, NodeEnv, Logger } from '@utils'
@@ -15,6 +15,8 @@ const swaggerUi = require("swagger-ui-express")
 const app = express()
 const httpServer = createServer(app);
 const io = new Server(httpServer);
+
+import 'utils/socket.io'
 
 // Set up Swagger
   const options = {

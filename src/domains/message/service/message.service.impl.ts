@@ -1,6 +1,6 @@
-import { NotFoundException, UnauthorizedException } from "@utils"
+import { NotFoundException, UnauthorizedException } from "../../../utils"
 import { MessageDTO, MessageInputDTO } from "../dto"
-import { FollowerRepository } from "@domains/follower/repository"
+import { FollowerRepository } from "../../follower/repository"
 import { MessageService } from "."
 import { MessageRepository } from "../repository"
 

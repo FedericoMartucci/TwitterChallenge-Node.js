@@ -5,9 +5,9 @@ import cors from 'cors'
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 
-import { Constants, NodeEnv, Logger } from '@utils'
-import { router } from '@router'
-import { ErrorHandling } from '@utils/errors'
+import { Constants, NodeEnv, Logger } from './utils'
+import { router } from './router'
+import { ErrorHandling } from './utils/errors'
 
 import swaggerJsdoc from "swagger-jsdoc";
 const swaggerUi = require("swagger-ui-express")
@@ -16,7 +16,7 @@ const app = express()
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-import 'utils/socket.io'
+// import 'utils/socket.io'
 
 // Set up Swagger
   const options = {
@@ -71,4 +71,4 @@ app.listen(Constants.PORT, () => {
   Logger.info(`Server listening on port ${Constants.PORT}`)
 })
 
- export { io }
+ export { app, io }

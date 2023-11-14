@@ -1,10 +1,10 @@
-import { CreatePostInputDTO, PostDTO } from "../../src/domains/post/dto";
-import { ReactionDTO, ReactionInputDTO, ReactionType } from "../../src/domains/reaction/dto";
-import { ReactionService, ReactionServiceImpl } from "../../src/domains/reaction/service"
-import { ConflictException, ForbiddenException, NotFoundException } from "../../src/utils";
-import { PostRepositoryTestImpl } from "../mocks/post.repository.test.impl";
-import { ReactionRepositoryTestImpl } from "../mocks/reaction.repository.test.impl";
-import { UserRepositoryTestImpl } from "../mocks/user.repository.test.impl";
+import { CreatePostInputDTO, PostDTO } from "../../../src/domains/post/dto";
+import { ReactionDTO, ReactionInputDTO, ReactionType } from "../../../src/domains/reaction/dto";
+import { ReactionService, ReactionServiceImpl } from "../../../src/domains/reaction/service"
+import { ConflictException, ForbiddenException, NotFoundException } from "../../../src/utils";
+import { PostRepositoryTestImpl } from "../../mocks/post.repository.test.impl";
+import { ReactionRepositoryTestImpl } from "../../mocks/reaction.repository.test.impl";
+import { UserRepositoryTestImpl } from "../../mocks/user.repository.test.impl";
 
 const reactionService: ReactionService = new ReactionServiceImpl(new ReactionRepositoryTestImpl(), new UserRepositoryTestImpl(), new PostRepositoryTestImpl())
 

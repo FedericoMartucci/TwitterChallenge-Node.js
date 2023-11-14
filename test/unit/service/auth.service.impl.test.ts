@@ -1,8 +1,8 @@
-import { LoginInputDTO, SignupInputDTO, TokenDTO } from "../../src/domains/auth/dto"
-import { AuthService, AuthServiceImpl } from "../../src/domains/auth/service"
-import { ProfilePictureDTO, UserViewDTO } from "../../src/domains/user/dto"
-import { ConflictException, NotFoundException, UnauthorizedException } from "../../src/utils/errors"
-import { UserRepositoryTestImpl } from "../mocks/user.repository.test.impl"
+import { LoginInputDTO, SignupInputDTO, TokenDTO } from "../../../src/domains/auth/dto"
+import { AuthService, AuthServiceImpl } from "../../../src/domains/auth/service"
+import { ProfilePictureDTO, UserViewDTO } from "../../../src/domains/user/dto"
+import { ConflictException, NotFoundException, UnauthorizedException } from "../../../src/utils/errors"
+import { UserRepositoryTestImpl } from "../../mocks/user.repository.test.impl"
 
 const authService: AuthService = new AuthServiceImpl(new UserRepositoryTestImpl())
 

@@ -22,7 +22,7 @@ export class MessageRepositoryImpl implements MessageRepository {
         return new MessageDTO({id: message.id, fromId: message.fromId, toId: message.toId, text: message.text, createdAt: message.createdAt})
     }
 
-    async getByUserId (toId: string, fromId: string): Promise<MessageDTO[]> {
+    async getByUserId (toId: string, fromId: string): Promise<MessageDTO[] | null> {
         const messages = await this.db.message.findMany({
             where: {
                 fromId: fromId,
@@ -30,6 +30,6 @@ export class MessageRepositoryImpl implements MessageRepository {
             },
         })
 
-        return messages.map(message => new MessageDTO({id: message.id, fromId: message.fromId, toId: message.toId, text: message.text, createdAt: message.createdAt}))
+        return !messages ? null : messages.map(message => new MessageDTO({id: message.id, fromId: message.fromId, toId: message.toId, text: message.text, createdAt: message.createdAt}))
     }
 }

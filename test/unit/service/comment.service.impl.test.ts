@@ -1,11 +1,11 @@
-import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from "../../src/domains/post/dto";
-import { CommentService, CommentServiceImpl } from "../../src/domains/comment/service"
-import { NotFoundException } from "../../src/utils";
-import { CommentRepositoryTestImpl } from "../mocks/comment.repository.test.impl";
-import { PostRepositoryTestImpl } from "../mocks/post.repository.test.impl";
-import { UserRepositoryTestImpl } from "../mocks/user.repository.test.impl";
-import { CommentDTO, CommentInputDTO } from "../../src/domains/comment/dto";
-import { UserDTO } from "../../src/domains/user/dto";
+import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from "../../../src/domains/post/dto";
+import { CommentService, CommentServiceImpl } from "../../../src/domains/comment/service"
+import { NotFoundException } from "../../../src/utils";
+import { CommentRepositoryTestImpl } from "../../mocks/comment.repository.test.impl";
+import { PostRepositoryTestImpl } from "../../mocks/post.repository.test.impl";
+import { UserRepositoryTestImpl } from "../../mocks/user.repository.test.impl";
+import { CommentDTO, CommentInputDTO } from "../../../src/domains/comment/dto";
+import { UserDTO } from "../../../src/domains/user/dto";
 
 const commentService: CommentService = new CommentServiceImpl(new CommentRepositoryTestImpl(), new UserRepositoryTestImpl(), new PostRepositoryTestImpl())
 

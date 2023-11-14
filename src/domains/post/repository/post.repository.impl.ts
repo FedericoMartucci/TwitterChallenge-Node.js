@@ -1,11 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 
-import { CursorPagination } from '@types'
+import { CursorPagination } from '../../../types'
 
 import { PostRepository } from '.'
 import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from '../dto'
-import { ReactionType } from '@domains/reaction/dto'
-import { UserDTO } from '@domains/user/dto'
 
 export class PostRepositoryImpl implements PostRepository {
   constructor (private readonly db: PrismaClient) {}

@@ -115,10 +115,10 @@ import HttpStatus from 'http-status'
 // express-async-errors is a module that handles async errors in express, don't forget import it in your new controllers
 import 'express-async-errors'
 
-import { db, BodyValidation } from '@utils'
+import { db, BodyValidation } from '../../../utils'
 import { FollowerService, FollowerServiceImpl } from '../service'
 import { FollowerRepositoryImpl } from '../repository'
-import { UserRepositoryImpl } from '@domains/user/repository'
+import { UserRepositoryImpl } from '../../../domains/user/repository'
 
 export const followerRouter = Router()
 

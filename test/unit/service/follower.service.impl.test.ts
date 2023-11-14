@@ -1,8 +1,8 @@
-import { FollowerService, FollowerServiceImpl } from "../../src/domains/follower/service"
-import { ForbiddenException, NotFoundException } from "../../src/utils";
-import { FollowerRepositoryTestImpl } from "../mocks/follower.repository.test.impl";
-import { UserRepositoryTestImpl } from "../mocks/user.repository.test.impl";
-import { FollowDTO } from "../../src/domains/follower/dto";
+import { FollowerService, FollowerServiceImpl } from "../../../src/domains/follower/service"
+import { ForbiddenException, NotFoundException } from "../../../src/utils";
+import { FollowerRepositoryTestImpl } from "../../mocks/follower.repository.test.impl";
+import { UserRepositoryTestImpl } from "../../mocks/user.repository.test.impl";
+import { FollowDTO } from "../../../src/domains/follower/dto";
 
 const followerService: FollowerService = new FollowerServiceImpl(new FollowerRepositoryTestImpl(), new UserRepositoryTestImpl())
 

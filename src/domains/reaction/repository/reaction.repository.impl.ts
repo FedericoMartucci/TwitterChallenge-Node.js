@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client'
 
 import { ReactionRepository } from '.'
 import { ReactionDTO, ReactionInputDTO, ReactionType } from '../dto'
-import { UserDTO } from '@domains/user/dto'
-import { PostDTO } from '@domains/post/dto'
+import { UserDTO } from '../../../domains/user/dto'
+import { PostDTO } from '../../../domains/post/dto'
 
 export class ReactionRepositoryImpl implements ReactionRepository {
   constructor (private readonly db: PrismaClient) {}

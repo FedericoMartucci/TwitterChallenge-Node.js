@@ -1,8 +1,8 @@
-import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from "../../src/domains/post/dto";
-import { PostService, PostServiceImpl } from "../../src/domains/post/service"
-import { UserDTO } from "../../src/domains/user/dto";
-import { ForbiddenException, NotFoundException } from "../../src/utils";
-import { PostRepositoryTestImpl } from "../mocks/post.repository.test.impl";
+import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from "../../../src/domains/post/dto";
+import { PostService, PostServiceImpl } from "../../../src/domains/post/service"
+import { UserDTO } from "../../../src/domains/user/dto";
+import { ForbiddenException, NotFoundException } from "../../../src/utils";
+import { PostRepositoryTestImpl } from "../../mocks/post.repository.test.impl";
 
 const postService: PostService = new PostServiceImpl(new PostRepositoryTestImpl())
 

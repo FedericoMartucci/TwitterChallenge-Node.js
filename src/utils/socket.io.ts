@@ -3,10 +3,16 @@ import { UnauthorizedException } from "./errors";
 import jwt from 'jsonwebtoken'
 import { Constants } from "./constants";
 import { Socket } from "socket.io";
+import { MessageService, MessageServiceImpl } from "@domains/message";
+import { FollowerRepositoryImpl } from "@domains/follower/repository";
+import { MessageRepositoryImpl } from "@domains/message/repository";
+import { db } from "./database";
 
 interface SocketIO extends Socket {
     userId?: string
   }
+
+const messageService: MessageService = new MessageServiceImpl(new MessageRepositoryImpl(db), new FollowerRepositoryImpl(db))
 
  //Socket.IO Authentication
  io.use(async (socket: SocketIO, next) => {
@@ -23,9 +29,6 @@ interface SocketIO extends Socket {
                 next()
             }
         })
-         // Ensure that users follow each other
-         
-        throw new Error('Authentication failed');
      } catch (error) {
         socket.disconnect();
         return next(new Error('Authentication error'));
@@ -38,7 +41,7 @@ interface SocketIO extends Socket {
   
     socket.on('getMessages', async (receiverId) => {
       if (!socket.userId) return
-      const messages = await messageService.getMessages(socket.userId, receiverId)
+      const messages = await messageService.getMessages(receiverId, socket.userId)
       socket.emit('messages', messages)
     })
   
@@ -47,29 +50,7 @@ interface SocketIO extends Socket {
       console.log(messageData)
       const parsedData = JSON.parse(messageData)
       console.log(parsedData.receiverId)
-      const message = await messageService.sendMessage(socket.userId, parsedData.receiverId, parsedData.content)
+      const message = await messageService.sendMessage(socket.userId, parsedData.content)
       io.emit("newMessage", message)
     })
   })
-
- // Handling chat events
-//  io.on('connection', (socket) => {
-//      socket.on('message', async (messageData) => {
-//        try {
-//          // Save the message to the database using Prisma
-//         //  const message = await prisma.message.create({
-//         //    data: {
-//         //      fromId: socket.user.id,
-//         //      toId: messageData.to,
-//         //      text: messageData.text,
-//         //    },
-        
-//          });
-  
-// //         // Emit the message to the recipient
-//          io.to(messageData.to).emit('message', messageData);
-//        } catch (error) {
-//          // Handle errors
-//        }
-//      });
-//    });

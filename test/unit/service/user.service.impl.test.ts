@@ -1,7 +1,7 @@
-import { UserService, UserServiceImpl } from "../../src/domains/user/service"
-import { ProfilePictureDTO, UserViewDTO } from "../../src/domains/user/dto"
-import { NotFoundException } from "../../src/utils/errors"
-import { UserRepositoryTestImpl } from "../mocks/user.repository.test.impl"
+import { UserService, UserServiceImpl } from "../../../src/domains/user/service"
+import { ProfilePictureDTO, UserViewDTO } from "../../../src/domains/user/dto"
+import { NotFoundException } from "../../../src/utils/errors"
+import { UserRepositoryTestImpl } from "../../mocks/user.repository.test.impl"
 
 const userService: UserService = new UserServiceImpl(new UserRepositoryTestImpl())
 

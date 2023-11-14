@@ -1,8 +1,8 @@
-import { ExtendedPostDTO } from "@domains/post/dto";
+import { ExtendedPostDTO } from "../../../domains/post/dto";
 import { CommentRepository } from "./comment.repository";
 import { CommentDTO, CommentInputDTO } from "../dto";
 import { PrismaClient } from "@prisma/client";
-import { CursorPagination } from "@types";
+import { CursorPagination } from "../../../types";
 
 export class CommentRepositoryImpl implements CommentRepository{
     constructor (private readonly db: PrismaClient) {}

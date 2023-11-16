@@ -1,5 +1,5 @@
 import request from "supertest"
-import { app } from "../../src/server"
+import { app, server } from "../../src/server"
 import { generateAccessToken } from "../../src/utils"
 import { ReactionDTO } from "../../src/domains/reaction/dto"
 
@@ -19,3 +19,8 @@ describe('/api/reaction/:postId', () => {
         expect(response.text).toBeInstanceOf(ReactionDTO);
     })
 })
+afterAll((done) => {
+    server.close(() => {
+        done();
+    });
+});

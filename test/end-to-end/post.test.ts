@@ -1,5 +1,5 @@
 import request from "supertest"
-import { app } from "../../src/server"
+import { app, server } from "../../src/server"
 import { generateAccessToken } from "../../src/utils"
 import { PostDTO } from "../../src/domains/post/dto"
 
@@ -9,7 +9,7 @@ describe('/api/post/', () => {
             content: "post's content"
         };
         const token = generateAccessToken({ userId: 'userId' })
-        
+        console.log(token)
         const response = await request(app).post(`/api/post`)
                             .set("Authorization", `Bearer ${token}`)
                             .send(requestBody);
@@ -18,3 +18,8 @@ describe('/api/post/', () => {
         expect(response.text).toBeInstanceOf(PostDTO);
     })
 })
+afterAll((done) => {
+    server.close(() => {
+        done();
+    });
+});

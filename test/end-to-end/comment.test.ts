@@ -1,5 +1,5 @@
 import request from "supertest"
-import { app } from "../../src/server"
+import { app, server } from "../../src/server"
 import { CommentDTO } from "../../src/domains/comment/dto";
 import { generateAccessToken } from "../../src/utils";
 
@@ -19,3 +19,8 @@ describe('/api/comment/:postId', () => {
         expect(response.text).toBeInstanceOf(CommentDTO);
     })
 })
+afterAll((done) => {
+    server.close(() => {
+        done();
+    });
+});

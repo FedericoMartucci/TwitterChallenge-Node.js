@@ -38,7 +38,6 @@
  *         name: JohnDoe
  *         createdAt: 2023-10-12T15:18:32.546Z
  *         isPrivate: true
- * 
  *     ExtendedUserDTO:
  *       allOf:
  *         - $ref: '#/components/schemas/UserDTO'
@@ -57,12 +56,10 @@
  *             password:
  *               type: string
  *               description: The user's password.
- *
  *           example:
  *             email: example@user.com
  *             user: username
  *             password: Password123.
- *     
  *     ProfilePictureDTO:
  *       type: object
  *       properties:
@@ -75,8 +72,7 @@
  *       example:
  *         name: myFile
  *         extension: .txt
- * 
- *      UserViewDTO:
+ *     UserViewDTO:
  *       type: object
  *       properties:
  *         id:
@@ -91,7 +87,6 @@
  *         profilePicture:
  *           type: string | null
  *           description: The user's profile picture.
- *
  *       example:
  *         id: abcdefg-hijklmn-opqrstu-vwxyz-1
  *         name: JohnDoe
@@ -290,6 +285,7 @@
  *     tags: [User]
  *     requestBody:
  *       required: true
+ *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/ProfilePictureDTO'

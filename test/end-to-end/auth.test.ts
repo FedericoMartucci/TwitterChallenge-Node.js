@@ -1,5 +1,5 @@
 import request from "supertest"
-import { app } from "../../src/server"
+import { app, server } from "../../src/server"
 import { TokenDTO } from "../../src/domains/auth/dto"
 
 describe('/api/auth/signup', () => {
@@ -30,3 +30,8 @@ describe('/api/auth/login', () => {
         expect(response.text).toBeInstanceOf(TokenDTO);
     })
 })
+afterAll((done) => {
+    server.close(() => {
+        done();
+    });
+});

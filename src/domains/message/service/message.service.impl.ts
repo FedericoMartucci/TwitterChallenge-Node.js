@@ -1,4 +1,4 @@
-import { NotFoundException, UnauthorizedException } from "../../../utils"
+import { ForbiddenException, NotFoundException, UnauthorizedException } from "../../../utils"
 import { MessageDTO, MessageInputDTO } from "../dto"
 import { FollowerRepository } from "../../follower/repository"
 import { MessageService } from "."
@@ -9,14 +9,13 @@ import { MessageRepository } from "../repository"
 export class MessageServiceImpl implements MessageService {
     constructor (private readonly repository: MessageRepository, private readonly followerRepository: FollowerRepository) {}
     
-    async sendMessage (userId: string, messageData: MessageInputDTO): Promise<MessageDTO>{
-        // console.log(typeof(userId), userId, typeof(receiverId), receiverId)
-        const isUserFollowingReceiver: boolean = await this.followerRepository.isFollowing(messageData.toId, userId)
-        const isReceiverFollowingUser: boolean = await this.followerRepository.isFollowing(userId, messageData.toId)
+    async sendMessage (messageData: MessageInputDTO): Promise<MessageDTO>{
+        const isUserFollowingReceiver: boolean = await this.followerRepository.isFollowing(messageData.to, messageData.from)
+        const isReceiverFollowingUser: boolean = await this.followerRepository.isFollowing(messageData.from, messageData.to)
 
-        if (!isUserFollowingReceiver || !isReceiverFollowingUser) throw new UnauthorizedException('user')
+        if (!isUserFollowingReceiver || !isReceiverFollowingUser) throw new ForbiddenException()
 
-        const messageSended: MessageDTO = await this.repository.create(userId, messageData)
+        const messageSended: MessageDTO = await this.repository.create(messageData.from, messageData)
         
         return messageSended
     }

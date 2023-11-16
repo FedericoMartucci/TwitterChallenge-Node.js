@@ -9,9 +9,11 @@ import { UserRepository, UserRepositoryImpl } from "../../../domains/user/reposi
 export class FollowerServiceImpl implements FollowerService {
     constructor (private readonly repository: FollowerRepository, private readonly userRepository: UserRepository) {}
     async follow (userId: string, ownId: string): Promise<FollowDTO> {
+        console.log(userId)
+        console.log(ownId)
         const followedId:boolean = await this.userRepository.isExistingId(userId)
         const isAlreadyFollowing: boolean = await this.repository.isFollowing(userId, ownId)
-
+        
         if(!followedId) throw new NotFoundException('user')
         if(ownId === userId) throw new ForbiddenException()
         if(isAlreadyFollowing) throw new ForbiddenException()

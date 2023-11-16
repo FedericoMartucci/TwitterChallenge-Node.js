@@ -1,5 +1,5 @@
 import request from "supertest"
-import { app } from "../../src/server"
+import { app, server } from "../../src/server"
 import { generateAccessToken } from "../../src/utils"
 import { FollowDTO } from "../../src/domains/follower/dto"
 
@@ -16,3 +16,9 @@ describe('/api/follow/:userId', () => {
         expect(response.text).toBeInstanceOf(FollowDTO);
     })
 })
+
+afterAll((done) => {
+    server.close(() => {
+        done();
+    });
+});

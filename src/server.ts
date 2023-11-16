@@ -14,9 +14,17 @@ const swaggerUi = require("swagger-ui-express")
 
 const app = express()
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+    //TODO: test the following:
+    // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    // allowedHeaders: ['*'],
+    // credentials: true,
+    // exposedHeaders: ["*"],
+  }});
 
-// import 'utils/socket.io'
+import 'utils/socket.io'
 
 // Set up Swagger
   const options = {
@@ -59,7 +67,11 @@ app.use(cookieParser()) // Parse cookies
 // Set up CORS
 app.use(
   cors({
-    origin: Constants.CORS_WHITELIST
+    origin: "*",
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['*'],
+    credentials: true,
+    exposedHeaders: ["*"],
   })
 )
 
@@ -67,8 +79,8 @@ app.use('/api', router)
 
 app.use(ErrorHandling)
 
-app.listen(Constants.PORT, () => {
+httpServer.listen(Constants.PORT, () => {
   Logger.info(`Server listening on port ${Constants.PORT}`)
 })
 
- export { app, io }
+ export { httpServer, app, io }

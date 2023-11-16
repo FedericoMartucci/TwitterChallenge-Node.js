@@ -16,10 +16,14 @@ export class MessageDTO{
 
 export class MessageInputDTO {
     constructor (message: MessageInputDTO) {
-        this.toId = message.toId
         this.text = message.text
+        this.from = message.from
+        this.to = message.to
+        this.username = message.username
     }
 
     text: string
-    toId: string
+    from: string
+    to: string
+    username: string
 }

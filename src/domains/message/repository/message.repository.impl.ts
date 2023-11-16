@@ -12,7 +12,7 @@ export class MessageRepositoryImpl implements MessageRepository {
                     connect: { id: userId },
                 },
                 to: {
-                    connect: { id: messageData.toId },
+                    connect: { id: messageData.to },
                 },
                 text: messageData.text,
                 

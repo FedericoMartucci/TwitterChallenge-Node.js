@@ -1,5 +1,5 @@
 import request from "supertest"
-import { app } from "../../src/server"
+import { app, server } from "../../src/server"
 import { UserDTO } from "../../src/domains/user/dto"
 import { generateAccessToken } from "../../src/utils"
 
@@ -14,3 +14,9 @@ describe('/api/user/', () => {
         expect(response.text).toBeInstanceOf(UserDTO);
     })
 })
+
+afterAll((done) => {
+    server.close(() => {
+        done();
+    });
+});

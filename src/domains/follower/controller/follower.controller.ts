@@ -127,7 +127,7 @@ const service: FollowerService = new FollowerServiceImpl(new FollowerRepositoryI
 
 followerRouter.post('/follow/:userId', async (req: Request, res: Response) => {
     const userId: string  = req.params.userId
-    const ownId: string = res.locals.context
+    const {userId: ownId} = res.locals.context
 
     const post = await service.follow(userId, ownId)
     
@@ -136,7 +136,7 @@ followerRouter.post('/follow/:userId', async (req: Request, res: Response) => {
 
 followerRouter.post('/unfollow/:userId', async (req: Request, res: Response) => {
     const userId: string = req.params.userId
-    const ownId: string = res.locals.context
+    const {userId: ownId} = res.locals.context
 
     const post = await service.unfollow(userId, ownId)
   

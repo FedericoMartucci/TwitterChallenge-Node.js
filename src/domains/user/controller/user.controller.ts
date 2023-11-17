@@ -371,15 +371,16 @@ userRouter.post('/update/profile_picture', BodyValidation(ProfilePictureDTO), as
 userRouter.get('/me', async (req: Request, res: Response) => {
   const { userId } = res.locals.context
 
-  const user = await service.getUser(userId)
+  const user = await service.getUser(userId, userId)
 
   return res.status(HttpStatus.OK).json(user)
 })
 
 userRouter.get('/:userId', async (req: Request, res: Response) => {
   const { userId: otherUserId } = req.params
+  const { userId } = res.locals.context
 
-  const user = await service.getUser(otherUserId)
+  const user = await service.getUser(otherUserId, userId)
 
   return res.status(HttpStatus.OK).json(user)
 })
@@ -389,5 +390,5 @@ userRouter.delete('/', async (req: Request, res: Response) => {
 
   await service.deleteUser(userId)
 
-  return res.status(HttpStatus.OK).send(`Deleted post ${userId}`)
+  return res.status(HttpStatus.OK).send(`Deleted user ${userId}`)
 })

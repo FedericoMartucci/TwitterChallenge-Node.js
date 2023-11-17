@@ -5,21 +5,40 @@ import { UserRepositoryTestImpl } from "../../mocks/user.repository.test.impl"
 
 const userService: UserService = new UserServiceImpl(new UserRepositoryTestImpl())
 
+
+jest.mock('aws-sdk', () => {
+    const mockS3 = {
+      getSignedUrl: jest.fn((operation, params) => {
+        // Mock the behavior of getSignedUrl based on operation and params
+        if (operation === 'putObject') {
+          return `https://siriuschallenge.s3.amazonaws.com/${params.Key}`;
+        } else if (operation === 'getObject') {
+          return `https://siriuschallenge.s3.amazonaws.com/${params.Key}`;
+        }
+        return 'mockedUrl';
+      }),
+    };
+    return {
+      S3: jest.fn(() => mockS3),
+    };
+  });
+
 describe('getUser return the user\'s info or null if it does not find any matching id', () => {
     test('It should get user\'s info.', async () => {
         const requestParams = {
             userId: "user-uuid32"
         };
 
-        const user: UserViewDTO|null = await userService.getUser(requestParams);
+        const user: UserViewDTO|null = await userService.getUser(requestParams, requestParams.userId);
 
         expect(user).toBeInstanceOf(UserViewDTO);
     });
     test('It should throw NotFoundException.', async () => {
         const userId: string = 'nonexisting-user-id'
+        const myId: string = 'myId'
 
         try {
-            await userService.getUser(userId);
+            await userService.getUser(userId, myId);
             fail('Expected NotFoundException but no exception was thrown');
         } catch (error) {
             expect(error).toBeInstanceOf(NotFoundException);

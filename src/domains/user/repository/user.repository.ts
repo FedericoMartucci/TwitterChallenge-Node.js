@@ -6,7 +6,7 @@ export interface UserRepository {
   create: (data: SignupInputDTO) => Promise<UserDTO>
   delete: (userId: string) => Promise<void>
   getRecommendedUsersPaginated: (options: OffsetPagination) => Promise<UserViewDTO[]>
-  getUserViewById: (userId: string) => Promise<UserViewDTO | null>
+  getUserViewById: (userId: string, myId: string) => Promise<UserViewDTO | null>
   getById: (userId: string) => Promise<UserDTO | null>
   getByEmailOrUsername: (email?: string, username?: string) => Promise<ExtendedUserDTO | null>
   getUsersByUsername: (userId: string, username: string, options: CursorPagination) => Promise<UserViewDTO[]|null>

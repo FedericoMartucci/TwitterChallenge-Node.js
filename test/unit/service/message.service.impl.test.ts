@@ -1,5 +1,5 @@
 import { MessageService, MessageServiceImpl } from "../../../src/domains/message/service"
-import { ForbiddenException, NotFoundException, UnauthorizedException } from "../../../src/utils";
+import { ForbiddenException, NotFoundException } from "../../../src/utils";
 import { FollowerRepositoryTestImpl } from "../../mocks/follower.repository.test.impl";
 import { MessageRepositoryTestImpl } from "../../mocks/message.repository.test.impl";
 import { MessageDTO, MessageInputDTO } from "../../../src/domains/message/dto";
@@ -9,20 +9,20 @@ const messageService: MessageService = new MessageServiceImpl(new MessageReposit
 describe('sendMessage store a message sent by a user in the db.', () => {
     test('It should return a MessageDTO.', async () => {
         const userId: string = 'already-following-userId'
-        const messageData: MessageInputDTO = {text: 'messageText', toId: 'already-following-userId'}
-        const message: MessageDTO = await messageService.sendMessage(userId, messageData)
+        const messageData: MessageInputDTO = {text: 'messageText', from: 'already-following-userId', to: 'already-following-userId', username: 'username'}
+        const message: MessageDTO = await messageService.sendMessage(messageData)
 
         expect(message).toBeInstanceOf(MessageDTO)
     })
-    test('It should throw UnauthorizedException as the users do not follow each other.', async () => {
+    test('It should throw ForbiddenException as the users do not follow each other.', async () => {
         const userId: string = 'userId'
-        const messageData: MessageInputDTO = {text: 'messageText', toId: 'toId'}
+        const messageData: MessageInputDTO = {text: 'messageText', from: 'fromId', to: 'toId', username: 'username'}
 
         try {
-            await messageService.sendMessage(userId, messageData)
-            fail('Expected UnauthorizedException but no exception was thrown');
+            await messageService.sendMessage(messageData)
+            fail('Expected ForbiddenException but no exception was thrown');
         } catch (error) {
-            expect(error).toBeInstanceOf(UnauthorizedException);
+            expect(error).toBeInstanceOf(ForbiddenException);
         }
     })
 })

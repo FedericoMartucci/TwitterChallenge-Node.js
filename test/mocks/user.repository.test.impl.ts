@@ -11,7 +11,7 @@ export class UserRepositoryTestImpl implements UserRepository {
         return new UserDTO(user)
     }
   
-    async getUserViewById (userId: any): Promise<UserViewDTO | null> {
+    async getUserViewById (userId: any, myId: string): Promise<UserViewDTO | null> {
       const user = {id: userId, name: 'name', username: "username", followsYou: false, profilePicture: null};
       
       if(userId === 'nonexisting-user-id')

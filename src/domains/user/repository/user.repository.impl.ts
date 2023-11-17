@@ -13,7 +13,7 @@ export class UserRepositoryImpl implements UserRepository {
     }).then(user => new UserDTO(user))
   }
 
-  async getUserViewById (userId: any): Promise<UserViewDTO | null> {
+  async getUserViewById (userId: any, myId: string): Promise<UserViewDTO | null> {
     const user = await this.db.user.findUnique({
       where: {
         id: userId
@@ -25,7 +25,7 @@ export class UserRepositoryImpl implements UserRepository {
     if(!user)
       return null
 
-    if(user.follows.filter(follows => follows.followedId === userId).length !== 0)
+    if(user.follows.filter(follows => follows.followedId === myId).length !== 0)
       return new UserViewDTO({
         id: user.id,
         name: user.name,

@@ -10,8 +10,8 @@ require('dotenv').config();
 export class UserServiceImpl implements UserService {
   constructor (private readonly repository: UserRepository) {}
 
-  async getUser (userId: any): Promise<UserViewDTO> {
-    const user = await this.repository.getUserViewById(userId)
+  async getUser (userId: any, myId: string): Promise<UserViewDTO> {
+    const user = await this.repository.getUserViewById(userId, myId)
     if (!user) throw new NotFoundException('user')
     return user
   }
@@ -38,6 +38,7 @@ export class UserServiceImpl implements UserService {
   async setUserProfilePicture (userId: any, data: ProfilePictureDTO): Promise<string>{
     const preSignedURL: string = setPreSignedURL(userId, data.name, data.extension)
     const downloadURL: string = getPreSignedURL(userId, data.name, data.extension)
+    console.log(preSignedURL, downloadURL)
     await this.repository.updateProfilePicture(userId, downloadURL)
     return preSignedURL
   }

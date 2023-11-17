@@ -114,7 +114,15 @@ export class CommentRepositoryImpl implements CommentRepository{
             include: {
                 reactions: true,
                 commentsInfo: true,
-                author: true,
+                author: {
+                    select: {
+                      id: true,
+                      name: true,
+                      createdAt: true,
+                      isPrivate: true,
+                      profilePicture: true,
+                    },
+                  },
             },
         })
         

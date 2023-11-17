@@ -14,6 +14,6 @@ export class FollowerRepositoryTestImpl implements FollowerRepository{
     }
     
     async isFollowing (userId: string, ownId: string): Promise<boolean> {
-        return userId === 'already-following-userId'? true : false
+        return userId === 'already-following-userId' ? true : false
     }
 }

@@ -3,7 +3,7 @@ import { MessageDTO, MessageInputDTO } from "../../src/domains/message/dto";
 
 export class MessageRepositoryTestImpl implements MessageRepository {
     async create (userId: string, messageData: MessageInputDTO): Promise<MessageDTO>{
-        return new MessageDTO({id: 'messageId', fromId: userId, toId: messageData.toId, text: messageData.text, createdAt: new Date('2023-11-13T13:37:31.056Z')})
+        return new MessageDTO({id: 'messageId', fromId: userId, toId: messageData.to, text: messageData.text, createdAt: new Date('2023-11-13T13:37:31.056Z')})
     }
 
     async getByUserId (toId: string, fromId: string): Promise<MessageDTO[] | null>{

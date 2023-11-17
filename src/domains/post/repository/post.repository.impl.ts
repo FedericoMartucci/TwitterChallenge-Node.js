@@ -71,7 +71,7 @@ export class PostRepositoryImpl implements PostRepository {
     const extendedPostDTOs: ExtendedPostDTO[] = posts.map(comment => { 
         const qtyLikes: number = posts.reduce((totalLikes, comment) => {
         const likesInPost = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
-        return totalLikes + likesInPost;
+        return likesInPost;
       }, 0);
     const qtyRetweets: number = posts.reduce((totalRetweets, comment) => {
         const retweetsInPost = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;

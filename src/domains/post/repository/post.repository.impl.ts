@@ -4,6 +4,7 @@ import { CursorPagination } from '../../../types'
 
 import { PostRepository } from '.'
 import { CreatePostInputDTO, ExtendedPostDTO, PostDTO } from '../dto'
+import { db } from '@utils'
 
 export class PostRepositoryImpl implements PostRepository {
   constructor (private readonly db: PrismaClient) {}
@@ -38,10 +39,8 @@ export class PostRepositoryImpl implements PostRepository {
           },
         ],
         commentsInfo: {
-          every: {
-              commentId: undefined,
-          }
-        }
+          none: {},
+        },
       },
       cursor: options.after ? { id: options.after } : (options.before) ? { id: options.before } : undefined,
       skip: options.after ?? options.before ? 1 : undefined,
@@ -65,34 +64,26 @@ export class PostRepositoryImpl implements PostRepository {
           },
         },
         reactions: true,
-        commentsInfo: true,
       }
     })
-    const extendedPostDTOs: ExtendedPostDTO[] = posts.map(comment => { 
-        const qtyLikes: number = posts.reduce((totalLikes, comment) => {
-        const likesInPost = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
-        return likesInPost;
-      }, 0);
-    const qtyRetweets: number = posts.reduce((totalRetweets, comment) => {
-        const retweetsInPost = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
-        return totalRetweets + retweetsInPost;
-      }, 0);
-    const qtyComments: number = posts.reduce((totalComments, comment) => {
-        const commentsInPost = comment.commentsInfo.length;
-        return totalComments + commentsInPost;
-      }, 0);
+
+
+    const extendedPostDTOs: Promise<ExtendedPostDTO[]> = Promise.all(posts.map(async post => { 
+        const qtyLikes: number = post.reactions.filter(reaction => reaction.reactionType === 'LIKE').length
+        const qtyRetweets = post.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
+        const qtyComments = await getQtyCommentsByPost(post)
     
     return new ExtendedPostDTO({
-        id: comment.id,
-        authorId: comment.authorId,
-        content: comment.content,
-        images: comment.images,
-        createdAt: comment.createdAt,
-        author: comment.author,
+        id: post.id,
+        authorId: post.authorId,
+        content: post.content,
+        images: post.images,
+        createdAt: post.createdAt,
+        author: post.author,
         qtyLikes,
         qtyRetweets,
         qtyComments,
-    })});
+    })}));
   return extendedPostDTOs
 
   }
@@ -171,33 +162,34 @@ export class PostRepositoryImpl implements PostRepository {
         commentsInfo: true,
       }
     })
-    const extendedPostDTOs: ExtendedPostDTO[] = posts.map(comment => { 
-          const qtyLikes: number = posts.reduce((totalLikes, comment) => {
-          const likesInPost = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
-          return totalLikes + likesInPost;
-      }, 0);
-      const qtyRetweets: number = posts.reduce((totalRetweets, comment) => {
-          const retweetsInPost = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
-          return totalRetweets + retweetsInPost;
-      }, 0);
-      const qtyComments: number = posts.reduce((totalComments, comment) => {
-          const commentsInPost = comment.commentsInfo.length;
-          return totalComments + commentsInPost;
-      }, 0);
+    const extendedPostDTOs: Promise<ExtendedPostDTO[]> = Promise.all(posts.map(async post => { 
+      const qtyLikes: number = post.reactions.filter(reaction => reaction.reactionType === 'LIKE').length
+      const qtyRetweets = post.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
+      const qtyComments: number = await getQtyCommentsByPost(post)
       
       return new ExtendedPostDTO({
-          id: comment.id,
-          authorId: comment.authorId,
-          content: comment.content,
-          images: comment.images,
-          createdAt: comment.createdAt,
-          author: comment.author,
+          id: post.id,
+          authorId: post.authorId,
+          content: post.content,
+          images: post.images,
+          createdAt: post.createdAt,
+          author: post.author,
           qtyLikes,
           qtyRetweets,
           qtyComments,
-  })});
+  })}));
   return extendedPostDTOs
   }
 }
 
-
+export async function getQtyCommentsByPost(post: any): Promise<number> {
+  const commentsByPost = await db.commentInfo.groupBy({
+    by: ['postId'],
+    _count: true,
+    where: {
+      postId: post.id
+      }
+  });
+  //TODO: ask about recursivity to count comments' comments by post.
+  return commentsByPost.length > 0 && commentsByPost[0]._count? commentsByPost[0]._count : 0
+}

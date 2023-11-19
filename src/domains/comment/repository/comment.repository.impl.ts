@@ -3,6 +3,7 @@ import { CommentRepository } from "./comment.repository";
 import { CommentDTO, CommentInputDTO } from "../dto";
 import { PrismaClient } from "@prisma/client";
 import { CursorPagination } from "../../../types";
+import { getQtyCommentsByPost } from "@domains/post/repository";
 
 export class CommentRepositoryImpl implements CommentRepository{
     constructor (private readonly db: PrismaClient) {}
@@ -125,11 +126,11 @@ export class CommentRepositoryImpl implements CommentRepository{
                   },
             },
         })
-        
-        const extendedPostDTOs: ExtendedPostDTO[] = comments.map(comment => {
+
+        const extendedPostDTOs: Promise<ExtendedPostDTO[]> = Promise.all(comments.map(async comment => {
             const qtyLikes = comment.reactions.filter(reaction => reaction.reactionType === 'LIKE').length;
             const qtyRetweets = comment.reactions.filter(reaction => reaction.reactionType === 'RETWEET').length;
-            const qtyComments = comment.commentsInfo.filter(commentInfo => commentInfo.postId === comment.id).length;
+            const qtyComments = await getQtyCommentsByPost(comment);
         
             return new ExtendedPostDTO({
                 id: comment.id,
@@ -142,7 +143,7 @@ export class CommentRepositoryImpl implements CommentRepository{
                 qtyRetweets,
                 qtyComments,
             });
-        });
+        }));
         
         return extendedPostDTOs
     }

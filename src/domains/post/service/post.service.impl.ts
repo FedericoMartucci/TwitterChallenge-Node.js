@@ -27,9 +27,9 @@ export class PostServiceImpl implements PostService {
   }
 
   async getLatestPosts (userId: string, options: CursorPagination): Promise<ExtendedPostDTO[]> {
-    const post = await this.repository.getAllByDatePaginated(userId, options)
-    if(!post.length) throw new NotFoundException('posts')
-    return post
+    const posts = await this.repository.getAllByDatePaginated(userId, options)
+    if(!posts.length) throw new NotFoundException('posts')
+    return posts
   }
 
   async getPostsByAuthor (userId: any, authorId: string): Promise<ExtendedPostDTO[]> {
